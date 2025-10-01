@@ -9,7 +9,7 @@ export const userValidator = Joi.object({
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
     .required(),
   firstName: Joi.string().required(),
-  lastName: Joi.string().required(),
+  lastName: Joi.string(),
   dateOfBirth: Joi.date()
     .less("now")
     .required()
@@ -28,5 +28,8 @@ export const userValidator = Joi.object({
     .required()
     .pattern(/(?![_.])[A-Za-z0-9._]+(?<![_.])/),
   bio: Joi.string().trim().max(300),
-  
+});
+
+export const userIdValidator = Joi.object({
+  userId: Joi.string().hex().length(24).required(),
 });
