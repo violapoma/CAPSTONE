@@ -11,6 +11,11 @@ const CommunitySchema = new mongoose.Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    style: {
+      backgroundColor: { type: String, default: "#f7f3f2" },
+      titleColor:   { type: String, default: "#000000" },
+      secondaryColor: { type: String, default: "#d5c9c9" }
+    },
     moderator: {
       type: Schema.Types.ObjectId,
       ref: "User",

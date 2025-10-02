@@ -9,12 +9,11 @@ const NotificationSchema = new Schema({
   },
   sourceModel: {
     type: String,
-    enum: ["Post", "Comment", "Community", "User"],
+    enum: ["Post", "Comment", "Community", "User", "FollowConnection"],
     required: true,
   },
   source: {
     type: Schema.Types.ObjectId, refPath: "sourceModel",
-    required: true,
   },
   meta: {
     commentId: {type: Schema.Types.ObjectId, ref: "Comment"},

@@ -9,7 +9,9 @@ const OBJECTID_LENGTH = Number(process.env.OBJECTID_LENGTH) || 24;
 export function joiObjectId(){
   return Joi.string().length(OBJECTID_LENGTH).hex().required();
 }; 
-
+export function joiObjectIdNotRequired(){
+  return Joi.string().length(OBJECTID_LENGTH).hex();
+}
 /**
  * 
  * @param {number} min - min array length (optional) 

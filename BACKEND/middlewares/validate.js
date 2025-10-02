@@ -9,6 +9,7 @@
  */
 export const validate = (schema, property = 'params') => {
   return (request, response, next) => {
+    console.log(request.params.userId);
     const { error } = schema.validate(request[property]);
     if (error) {
       const msg = error.details.map(err => err.message).join(', ');
