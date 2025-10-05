@@ -1,7 +1,6 @@
 import express from "express";
 import { validate } from "../middlewares/validate.js";
 import {
-  followUserId,
   followingUserValidator,
 } from "../validators/follow.validator.js";
 import {

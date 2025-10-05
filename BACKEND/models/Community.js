@@ -25,11 +25,7 @@ const CommunitySchema = new mongoose.Schema(
     members: {
       type: [{ type: Schema.Types.ObjectId, ref: "User" }],
       required: true,
-    },
-    postList: {
-      type: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-      default: [],
-    },
+    }
   },
   { timestamps: true }
 );

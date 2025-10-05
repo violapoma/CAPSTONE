@@ -23,7 +23,7 @@ export const communityValidator = Joi.object({
 
 export const communityIdValidator = Joi.object({
   communityId: joiObjectId().required(),
-});
+}).unknown(true);
 
 export const changeDescrValidator = Joi.object({
   description: Joi.string().min(1).max(600).required(),

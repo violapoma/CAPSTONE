@@ -1,7 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 
 const PostSchema = new Schema({
-  title: {type: String, required:true},
+  title: {type: String, required:true, unique:true},
   subtitle: String,
   content: {type: String, required: true},
   cover: {type: String, default:"TODO: metti-default-post-cover"},

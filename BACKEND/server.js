@@ -13,6 +13,9 @@ import communityRouter from "./routers/community.router.js";
 import { validate } from "./middlewares/validate.js";
 import { userIdValidator } from "./validators/user.validator.js";
 import { userAccessMw } from "./middlewares/userAccessMw.js";
+import postRouter from "./routers/post.router.js";
+import { communityIdValidator } from "./validators/community.validator.js";
+import { checkExistingCommunityMw } from "./middlewares/checkExistingCommunityMw.js";
 
 
 const server = express();
@@ -29,6 +32,8 @@ server.use('/users', authMW, userRouter);
 server.use('/communities', authMW, communityRouter);
 server.use('/notifications', authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 
+server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, postRouter);
+//server.use('/posts', authMW, postRouter);
 
 //error 404
 server.use((req, res, next) => {

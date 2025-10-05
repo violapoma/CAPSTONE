@@ -3,6 +3,7 @@ import Community from "../models/Community.js";
 const MIN_MEMBERS = Number(process.env.MIN_MEMBERS);
 
 export async function createCommunity(request, response) {
+  console.log('entering controller');
   let payload = request.body;
   const userId = request.loggedUser?.id;
   if (!userId)
@@ -42,6 +43,7 @@ export async function getAllCommunities(request, response) {
     });
   }
 }
+
 
 export async function getByStatus(request, response) {
   const reqStauts = request.type;
