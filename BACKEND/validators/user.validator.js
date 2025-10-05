@@ -8,6 +8,8 @@ export const userValidator = Joi.object({
     .min(8)
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
     .required(),
+  role: Joi.string().valid("admin", "user").default('user').required(),
+
   firstName: Joi.string().required(),
   lastName: Joi.string(),
   dateOfBirth: Joi.date()

@@ -1,14 +1,15 @@
 import cors from "cors"; 
 import express from "express"; 
+import morgan from "morgan";
 import "dotenv/config"; 
 import { connectDB } from "./db.js";
-import morgan from "morgan";
 import authRouter from "./routers/auth.router.js";
 import meRouter from "./routers/me.router.js";
 import followRouter from "./routers/follow.router.js";
 import userRouter from "./routers/user.router.js";
 import authMW from "./middlewares/authMW.js";
 import notificationRouter from "./routers/notification.router.js";
+import communityRouter from "./routers/community.router.js";
 import { validate } from "./middlewares/validate.js";
 import { userIdValidator } from "./validators/user.validator.js";
 
@@ -24,16 +25,18 @@ server.use(express.json());
 server.use('/auth', authRouter);
 server.use('/me', authMW, meRouter); 
 server.use('/users', authMW, userRouter);
+server.use('/communities', authMW, communityRouter);
 server.use('/users/:userId/notifications',validate(userIdValidator), authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 
+
 //error 404
 server.use((req, res, next) => {
-  res.status(404).json({ message: "my NOT_FOUND" });
+  res.status(404).json({ message: "BIG_NOT_FOUND" });
 });
 //error 500
 server.use((err, req, res, next) => {
   console.error("Errore:", err);
-  res.status(500).json({ message: "INTERNAL_SERVE_ERROR" });
+  res.status(500).json({ message: "BIG_INTERNAL_SERVER_ERROR" });
 });
 
 connectDB();

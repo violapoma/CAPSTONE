@@ -13,6 +13,11 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ["user", "moderator", "admin"],
+    default: "user"
+  },
   firstName: { type: String, required: true, trim: true },
   lastName: { type: String, trim: true },
   dateOfBirth: { type: Date, required: true },

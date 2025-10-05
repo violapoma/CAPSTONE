@@ -2,9 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 const CommunitySchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, immutable: true },
-    topic: { type: String, required: true, immutable: true },
-    cover: { type: String, default: "TODO: metti-default-community" },
+    name: { type: String, lowercase: true, required: true, immutable: true, unique: true},
+    topic: [{ type: String, required: true, immutable: true }],
+    cover: { type: String, default: "https://res.cloudinary.com/dm9gnud6j/image/upload/v1759663013/nocover_d78avw.jpg" },
     description: { type: String, required: true},
     status: {
       type: String,

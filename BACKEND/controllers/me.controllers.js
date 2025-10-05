@@ -75,19 +75,18 @@ export async function changePassword(request, response) {
 
 /**
  * changes the user's profile picture
- * @param {*} request 
- * @param {*} response 
+ * @param {*} request
+ * @param {*} response
  * @returns success or error message
  */
-export async function changeProfilePic(request, response){
+export async function changeProfilePic(request, response) {
   const id = request.loggedUser;
-  if (!request.file)
-      return response
-        .status(400)
-        .json({ message: "Picture not found in request", error: err.message });
-  try{
-    const imgPath = request.file?.path; 
-
+  const imgPath = request.file?.path;
+  if (!imgPath)
+    return response
+      .status(400)
+      .json({ message: "Picture not found in request", error: err.message });
+  try {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { profilePic: imgPath },
@@ -96,21 +95,25 @@ export async function changeProfilePic(request, response){
     if (!updatedUser)
       return response
         .status(404)
-        .json({ message: "User not found, unable to update profile pic", error: err.message });
+        .json({
+          message: "User not found, unable to update profile pic",
+          error: err.message,
+        });
 
     response.status(200).json(updatedUser);
   } catch (err) {
     return response.status(500).json({
-      message: "Something went wrong while tryng to update loggedUser profile pic",
+      message:
+        "Something went wrong while tryng to update loggedUser profile pic",
       error: err.message,
     });
   }
 }
 
 /**
- * deletes the loggedUser 
- * @param {*} request 
- * @param {*} response 
+ * deletes the loggedUser
+ * @param {*} request
+ * @param {*} response
  * @returns success or error message
  */
 export async function deleteMe(request, response) {
@@ -123,7 +126,9 @@ export async function deleteMe(request, response) {
       return response
         .status(404)
         .json({ message: `User NOT found, unable to delete (id: ${id})` });
-    return response.status(200).json({message: `user ${request.loggedUser.username} deleted`});
+    return response
+      .status(200)
+      .json({ message: `user ${request.loggedUser.username} deleted` });
   } catch (err) {
     return response.status(500).json({
       message: "Something went wrong while tryng to delete loggedUser",
