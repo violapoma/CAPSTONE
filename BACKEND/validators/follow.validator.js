@@ -6,8 +6,7 @@ export const followValidator = Joi.object({
   followeing: joiObjectId().required(),
 }); 
 
-export const followParamsValidator = Joi.object({
-  userId: joiObjectId().required(),
+export const followingUserValidator = Joi.object({
   followingId: joiObjectId().required(),
 });
 

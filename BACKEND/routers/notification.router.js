@@ -7,7 +7,7 @@ const notificationRouter = express.Router({ mergeParams: true });
 
 notificationRouter.post('/', validate(notificationValidator, 'body'), createNotification);
 notificationRouter.get('/', getAllNotifications);
-notificationRouter.patch('/:notificationId', validate(notificationParamsValidator), changeNotificationStatus); 
+notificationRouter.patch('/:notificationId/read', validate(notificationParamsValidator), changeNotificationStatus); 
 
 
 export default notificationRouter; 

@@ -1,8 +1,8 @@
 import express from "express";
 import { validate } from "../middlewares/validate.js";
 import {
-  followParamsValidator,
   followUserId,
+  followingUserValidator,
 } from "../validators/follow.validator.js";
 import {
   followUser,
@@ -12,34 +12,33 @@ import {
 
 const followRouter = express.Router();
 
+followRouter.post(
+  "/:followingId",
+  validate(followingUserValidator),
+  followUser
+);
+
 followRouter.get(
-  "/:userId/followers",
+  "/followers",
   (request, response, next) => {
     request.type = "followers";
     next();
   },
-  validate(followUserId),
   getFollowList
 );
 
 followRouter.get(
-  "/:userId/following",
+  "/following",
   (request, response, next) => {
     request.type = "following";
     next();
   },
-  validate(followUserId),
   getFollowList
 );
 
-followRouter.post(
-  "/:userId/following/:followingId",
-  validate(followParamsValidator),
-  followUser
-);
 
-followRouter.delete('/:userId/unfollowing/:followingId', 
-  validate(followParamsValidator),
+followRouter.delete('/:followingId', 
+  validate(followingUserValidator),
   unfollowUser
 );
 

@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import User from "../models/User.js";
+import FollowConnection from "../models/FollowConnection.js";
+import Community from "../models/Community.js";
 
 /**
  * @param {*} request
@@ -93,12 +96,10 @@ export async function changeProfilePic(request, response) {
       { new: true }
     );
     if (!updatedUser)
-      return response
-        .status(404)
-        .json({
-          message: "User not found, unable to update profile pic",
-          error: err.message,
-        });
+      return response.status(404).json({
+        message: "User not found, unable to update profile pic",
+        error: err.message,
+      });
 
     response.status(200).json(updatedUser);
   } catch (err) {
@@ -111,28 +112,53 @@ export async function changeProfilePic(request, response) {
 }
 
 /**
- * deletes the loggedUser
+ * deletes the loggedUser and all their references
  * @param {*} request
  * @param {*} response
  * @returns success or error message
  */
 export async function deleteMe(request, response) {
   const id = request.loggedUser.id;
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  //TODO HELL
+  //TODO: cancel posts, likes, comments
 
   try {
-    const deleting = await User.findByIdAndDelete(id);
+    //follow connection
+    await FollowConnection.deleteMany({
+      $or: [{ follower: id }, { following: id }],
+    }).session(session);
+
+    //community - member
+    await Community.updateMany(
+      { members: id },
+      { $pull: { members: id } },
+      { session }
+    );
+
+    //community - moderator
+    await Community.deleteMany({ moderator: id }).session(session);
+
+    //posts, comments, likes
+
+    //deleting user
+    const deleting = await User.findByIdAndDelete(id).session(session);
 
     if (!deleting)
-      return response
-        .status(404)
-        .json({ message: `User NOT found, unable to delete (id: ${id})` });
+      throw new Error(`User ${userId} not found, unable to delete`);
+
+    await session.commitTransaction();
     return response
       .status(200)
       .json({ message: `user ${request.loggedUser.username} deleted` });
   } catch (err) {
+    await session.abortTransaction();
     return response.status(500).json({
       message: "Something went wrong while tryng to delete loggedUser",
       error: err.message,
     });
+  } finally {
+    await session.endSession();
   }
 }

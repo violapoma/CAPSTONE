@@ -14,6 +14,5 @@ export const notificationValidator = Joi.object({
 });
 
 export const notificationParamsValidator = Joi.object({
-  userId: joiObjectId().required(),
   notificationId: joiObjectId().required(),
 });

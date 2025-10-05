@@ -1,4 +1,3 @@
-import NotificationSchema from "../models/Notification.js";
 import User from "../models/User.js";
 
 /**
@@ -8,14 +7,15 @@ import User from "../models/User.js";
  * @returns the new notification
  */
 export async function createNotification(request, response) {
-  const { userId } = request.params;
+  // const { userId } = request.params;
+  const userId = request.loggedUser.id; 
   const payload = request.body;
   try {
     const user = await User.findById(userId);
     if (!user)
       return response.status(404).json({ message: `User ${userId} NOT FOUND` });
 
-    if(payload.category != 'community'){
+    if(payload.category != 'community'){ //verifying sender
       const sender = await User.findById(payload.from);
       if (!sender)
       return response.status(404).json({ message: `Sender ${payload.from} NOT FOUND` });
@@ -42,8 +42,8 @@ export async function createNotification(request, response) {
  * @returns all notification for a specified user
  */
 export async function getAllNotifications(request, response) {
-  console.log("notifications router hit");
-  const { userId } = request.params;
+  //const { userId } = request.params;
+  const userId = request.loggedUser.id; 
   try {
     const user = await User.findById(userId);
     if (!user)
@@ -60,13 +60,15 @@ export async function getAllNotifications(request, response) {
 }
 
 /**
- * changes the satus from of read from false to true
+ * changes the satus of read from false to true
  * @param {*} request 
  * @param {*} response 
  * @returns status 204 if the update is successful
  */
 export async function changeNotificationStatus(request, response) {
-  const { userId, notificationId } = request.params;
+  const { notificationId } = request.params;
+  const userId = request.loggedUser.id; 
+
   try {
     const user = await User.findOneAndUpdate(
       { _id: userId, "notifications._id": notificationId },

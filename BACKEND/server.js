@@ -12,6 +12,7 @@ import notificationRouter from "./routers/notification.router.js";
 import communityRouter from "./routers/community.router.js";
 import { validate } from "./middlewares/validate.js";
 import { userIdValidator } from "./validators/user.validator.js";
+import { userAccessMw } from "./middlewares/userAccessMw.js";
 
 
 const server = express();
@@ -26,7 +27,7 @@ server.use('/auth', authRouter);
 server.use('/me', authMW, meRouter); 
 server.use('/users', authMW, userRouter);
 server.use('/communities', authMW, communityRouter);
-server.use('/users/:userId/notifications',validate(userIdValidator), authMW, notificationRouter);
+server.use('/notifications', authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 
 
 //error 404
