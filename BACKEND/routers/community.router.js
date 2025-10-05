@@ -22,6 +22,7 @@ import {
 import { validate } from "../middlewares/validate.js";
 import { uploadCommunityCover } from "../middlewares/uploadCloudinary.js";
 import { adminMw } from "../middlewares/adminMw.js";
+import { canManageCommunity } from "../middlewares/canManageCommunity.js";
 
 const communityRouter = express.Router();
 
@@ -117,6 +118,7 @@ communityRouter.patch(
 communityRouter.delete(
   "/:communityId",
   validate(communityIdValidator),
+  canManageCommunity,
   deleteCommunity
 );
 

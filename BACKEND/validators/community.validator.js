@@ -10,6 +10,7 @@ export const communityValidator = Joi.object({
     .required(),
   description: Joi.string().required().max(600),
   status: Joi.string().valid("pending", "approved", "rejected"),
+  active: Joi.boolean().default(false),
   style: Joi.object({
     backgroundColor: Joi.string().pattern(exaPattern).default("#f7f3f2"),
     titleColor: Joi.string().pattern(exaPattern).default("#000000"),
@@ -31,6 +32,7 @@ export const changeDescrValidator = Joi.object({
 export const changeStatusValidator = Joi.object({
   status: Joi.string().valid("pending", "approved", "rejected").required(),
 })
+
 export const changeStyleValidator = Joi.object({
   style: Joi.object({
     backgroundColor: Joi.string().pattern(exaPattern).default("#f7f3f2"),

@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
 import Community from "../models/Community.js";
+
+const MIN_MEMBERS = Number(process.env.MIN_MEMBERS);
 
 export async function createCommunity(request, response) {
   let payload = request.body;
@@ -97,16 +98,16 @@ export async function changeField(request, response) {
   const id = request.params.communityId;
   const payload = request.body;
 
-  console.log('payload', payload);
+  console.log("payload", payload);
   if (!id || !["description", "style", "status"].includes(type))
     return response.status(400).json({ message: "Invalid request" });
   try {
     let query = {};
     if (type === "description") query = { description: payload.description };
     else if (type === "style") query = { style: payload };
-    else if (type === "status") query = {status: payload.status}
-    console.log('query', query);
-    console.log("Updating community", id, "with status", payload.status)
+    else if (type === "status") query = { status: payload.status };
+    console.log("query", query);
+    console.log("Updating community", id, "with status", payload.status);
     const updating = await Community.findByIdAndUpdate(id, query, {
       new: true,
     });
@@ -167,6 +168,9 @@ export async function joinCommunity(request, response) {
         message: `User ${request.loggedUser.username} is already member of '${community.name}'`,
       });
     community.members.push(userId);
+    if (community.members.length > MIN_MEMBERS) 
+      community.active = true;
+    //TODO: send mail to members
     await community.save();
     return response.status(200).json({ community });
   } catch (err) {
@@ -196,6 +200,9 @@ export async function leaveCommunity(request, response) {
     community.members = community.members.filter(
       (user) => user._id.toString() !== userId
     );
+    if (community.members.length<MIN_MEMBERS)
+      community.active = false;
+    //TODO: send mail to members and admin 
     await community.save();
     return response.status(200).json({ community });
   } catch (err) {
@@ -207,18 +214,18 @@ export async function leaveCommunity(request, response) {
 }
 
 export async function deleteCommunity(request, response) {
-  const id = request.params.communityId;
+  const {communityId} = request.params;
   try {
-    const deleting = await Community.findByIdAndDelete(id);
+    const deleting = await Community.findByIdAndDelete(communityId);
     if (!deleting)
       return response
         .stauts(404)
-        .json({ message: `Could NOT find community with id ${id}` });
+        .json({ message: `Could NOT find community with id ${communityId}` });
     //TODO: send notification to all members that the community has been cancelled
     return response.status(200).json({ community: deleting });
   } catch (err) {
     return response.status(500).json({
-      message: `Something went wrong while tryng to delete community with id ${id}`,
+      message: `Something went wrong while tryng to delete community with id ${communityId}`,
       error: err.message,
     });
   }
