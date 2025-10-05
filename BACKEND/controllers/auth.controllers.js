@@ -13,9 +13,9 @@ export async function register(request, response) {
 
     await newUser.save();
 
-    const token = signJWT({id: newUser._id}); //logging user
+    const token = signJWT({ id: newUser._id }); //logging user
 
-    return response.status(201).json({user: newUser, jwt: token});
+    return response.status(201).json({ user: newUser, jwt: token });
   } catch (err) {
     return response.status(500).json({
       message: `Error during register`,
@@ -24,21 +24,22 @@ export async function register(request, response) {
   }
 }
 
-export async function login(request, response){
-  try{
-    const {email, password} = request.body; 
+export async function login(request, response) {
+  try {
+    const { email, password } = request.body;
 
-    const fetchedUser = await User.findOne({email}).select('+password'); 
+    const fetchedUser = await User.findOne({ email }).select("+password");
 
-    if(fetchedUser){
-      if( await fetchedUser.comparePassword(password)) {
-        const jwt = signJWT({id: fetchedUser._id}); //logging user 
-        return response.status(200).json({message: `logged in as ${email}`,user: fetchedUser, jwt: jwt}); 
-      }
-    } else {
-      return response.status(400).json({message: 'wrong credentials'})
+    if (!fetchedUser || !(await fetchedUser.comparePassword(password))) {
+      return response.status(400).json({ message: 'wrong credentials' });
     }
-  } catch(err){
-    response.status(500).json({message: 'error during login', error: err.message}); 
+    const jwt = signJWT({ id: fetchedUser._id });
+    return response
+      .status(200)
+      .json({ message: `logged in as ${email}`, user: fetchedUser, jwt });
+  } catch (err) {
+    response
+      .status(500)
+      .json({ message: "error during login", error: err.message });
   }
 }

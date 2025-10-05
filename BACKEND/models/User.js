@@ -18,7 +18,7 @@ const UserSchema = new Schema({
   dateOfBirth: { type: Date, required: true },
   username: { type: String, required: true, unique: true },
   bio: { type: String, trim: true },
-  profilePic: { type: String, default: "TODO: metti-default-profile-pic" },
+  profilePic: { type: String, default: "https://res.cloudinary.com/dm9gnud6j/image/upload/v1759652432/nopicuser_wgqx0d.png" },
   googleId: { type: String },
 
   notifications: { type: [NotificationSchema], default: [] },

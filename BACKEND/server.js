@@ -3,13 +3,15 @@ import express from "express";
 import "dotenv/config"; 
 import { connectDB } from "./db.js";
 import morgan from "morgan";
-import userRouter from "./routers/user.router.js";
-import followRouter from "./routers/follow.router.js";
 import authRouter from "./routers/auth.router.js";
+import meRouter from "./routers/me.router.js";
+import followRouter from "./routers/follow.router.js";
+import userRouter from "./routers/user.router.js";
 import authMW from "./middlewares/authMW.js";
 import notificationRouter from "./routers/notification.router.js";
 import { validate } from "./middlewares/validate.js";
 import { userIdValidator } from "./validators/user.validator.js";
+
 
 const server = express();
 const port = process.env.PORT;
@@ -20,6 +22,7 @@ server.use(express.json());
 
 //routers
 server.use('/auth', authRouter);
+server.use('/me', authMW, meRouter); 
 server.use('/users', authMW, userRouter);
 server.use('/users/:userId/notifications',validate(userIdValidator), authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 

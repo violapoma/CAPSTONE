@@ -1,0 +1,133 @@
+import User from "../models/User.js";
+
+/**
+ * @param {*} request
+ * @param {*} response
+ * @returns the logged user, stored in request via authMw
+ */
+export async function getMe(request, response) {
+  try {
+    const me = request.loggedUser;
+    return response.status(200).json(me);
+  } catch (err) {
+    return response
+      .status(500)
+      .json({ message: "error fetching logged user", error: err.message });
+  }
+}
+
+/**
+ * updates the loggedUser info
+ * @param {*} request
+ * @param {*} response
+ * @returns the updated loggedUser
+ */
+export async function editMe(request, response) {
+  try {
+    const id = request.loggedUser.id;
+    const payload = request.body;
+
+    const updatedUser = await User.findByIdAndUpdate(id, payload, {
+      new: true,
+    });
+    if (!updatedUser)
+      return response
+        .status(404)
+        .json({ message: `User NOT found, unable to update (id: ${id})` });
+
+    return response.status(200).json(updatedUser);
+  } catch (err) {
+    return response.status(500).json({
+      message: "Something went wrong while tryng to update loggedUser infos",
+      error: err.message,
+    });
+  }
+}
+
+/**
+ * changes the password of the loggedUser
+ * @param {*} request
+ * @param {*} response
+ * @returns success or error message
+ */
+export async function changePassword(request, response) {
+  const id = request.loggedUser.id;
+  try {
+    const { password } = request.body;
+
+    const user = await User.findById(id).select("+password");
+    if (!user)
+      return response
+        .status(404)
+        .json({ message: `User NOT found, unable to update (id: ${id})` });
+
+    user.password = password;
+    await user.save();
+
+    return response.status(200).json({ message: "Password updated" });
+  } catch (err) {
+    return response.status(500).json({
+      message: "Something went wrong while tryng to update loggedUser password",
+      error: err.message,
+    });
+  }
+}
+
+/**
+ * changes the user's profile picture
+ * @param {*} request 
+ * @param {*} response 
+ * @returns success or error message
+ */
+export async function changeProfilePic(request, response){
+  const id = request.loggedUser;
+  if (!request.file)
+      return response
+        .status(400)
+        .json({ message: "Picture not found in request", error: err.message });
+  try{
+    const imgPath = request.file?.path; 
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { profilePic: imgPath },
+      { new: true }
+    );
+    if (!updatedUser)
+      return response
+        .status(404)
+        .json({ message: "User not found, unable to update profile pic", error: err.message });
+
+    response.status(200).json(updatedUser);
+  } catch (err) {
+    return response.status(500).json({
+      message: "Something went wrong while tryng to update loggedUser profile pic",
+      error: err.message,
+    });
+  }
+}
+
+/**
+ * deletes the loggedUser 
+ * @param {*} request 
+ * @param {*} response 
+ * @returns success or error message
+ */
+export async function deleteMe(request, response) {
+  const id = request.loggedUser.id;
+
+  try {
+    const deleting = await User.findByIdAndDelete(id);
+
+    if (!deleting)
+      return response
+        .status(404)
+        .json({ message: `User NOT found, unable to delete (id: ${id})` });
+    return response.status(200).json({message: `user ${request.loggedUser.username} deleted`});
+  } catch (err) {
+    return response.status(500).json({
+      message: "Something went wrong while tryng to delete loggedUser",
+      error: err.message,
+    });
+  }
+}
