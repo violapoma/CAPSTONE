@@ -16,6 +16,9 @@ import { userAccessMw } from "./middlewares/userAccessMw.js";
 import postRouter from "./routers/post.router.js";
 import { communityIdValidator } from "./validators/community.validator.js";
 import { checkExistingCommunityMw } from "./middlewares/checkExistingCommunityMw.js";
+import { postIdValidator } from "./validators/post.validator.js";
+import { checkExistingPostMw } from "./middlewares/checkExistingPostMw.js";
+import commentRouter from "./routers/comment.router.js";
 
 
 const server = express();
@@ -34,6 +37,8 @@ server.use('/notifications', authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 
 server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, postRouter);
 //server.use('/posts', authMW, postRouter);
+server.use('/posts/:postId/comments', authMW, checkExistingPostMw, validate(postIdValidator), commentRouter);
+//??? va bene così la rotta di comments? 
 
 //error 404
 server.use((req, res, next) => {

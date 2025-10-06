@@ -146,7 +146,7 @@ export async function deleteMe(request, response) {
     const deleting = await User.findByIdAndDelete(id).session(session);
 
     if (!deleting)
-      throw new Error(`User ${userId} not found, unable to delete`);
+      throw new Error(`User ${id} not found, unable to delete`);
 
     await session.commitTransaction();
     return response

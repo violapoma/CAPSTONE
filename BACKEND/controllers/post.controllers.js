@@ -74,8 +74,8 @@ export async function editPost(request, response) {
   }
 }
 
-export async function changePostCover(request, response){
-  const {postId} = request.params; 
+export async function changePostCover(request, response) {
+  const { postId } = request.params;
   const imgPath = request.file?.path;
   if (!imgPath)
     return response
@@ -100,8 +100,10 @@ export async function changePostCover(request, response){
   }
 }
 
-export async function deletePost(request, response){
-  const {postId} = request.params; 
+
+//TODO: delete all comments > session
+export async function deletePost(request, response) {
+  const { postId } = request.params;
   try {
     const deleting = await Post.findByIdAndDelete(postId);
     if (!deleting)

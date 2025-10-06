@@ -100,7 +100,6 @@ export async function changeField(request, response) {
   const id = request.params.communityId;
   const payload = request.body;
 
-  console.log("payload", payload);
   if (!id || !["description", "style", "status"].includes(type))
     return response.status(400).json({ message: "Invalid request" });
   try {
