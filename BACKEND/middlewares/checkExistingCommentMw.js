@@ -19,9 +19,6 @@ export async function checkExistingCommentMw(request, response, next) {
         .status(404)
         .json({ message: `Could NOT find post with id ${postId}` });
 
-    if(!post.comments.includes(commentId))
-      return response.status(400).json({message: `Comment ${commentId} does NOT belogn to post ${postId}`}); 
-    
     next();
   } catch (err) {
     return response.status(500).json({
