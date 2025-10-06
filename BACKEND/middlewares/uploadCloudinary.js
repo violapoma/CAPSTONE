@@ -35,7 +35,7 @@ const communityStorage = new CloudinaryStorage({
 const postStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "Capstone/Users",
+    folder: "Capstone/Posts",
     format: "png",
     public_id: () => uuidv4(), 
   },

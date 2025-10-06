@@ -4,7 +4,7 @@ const PostSchema = new Schema({
   title: {type: String, required:true, unique:true},
   subtitle: String,
   content: {type: String, required: true},
-  cover: {type: String, default:"TODO: metti-default-post-cover"},
+  cover: {type: String, default:"https://res.cloudinary.com/dm9gnud6j/image/upload/v1759786199/noimgPost_npspix.webp"},
   inCommunity: {type: Schema.Types.ObjectId, ref:'Community', required: true},
   author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   likes: [{type: Schema.Types.ObjectId, ref: 'User'}],

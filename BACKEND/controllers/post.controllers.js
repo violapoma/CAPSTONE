@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import Community from "../models/Community.js";
 import { Post } from "../models/Post.js";
+import { Comment } from "../models/Comment.js";
 
 export async function createPost(request, response) {
   let payload = request.body;
@@ -100,20 +102,25 @@ export async function changePostCover(request, response) {
   }
 }
 
-
-//TODO: delete all comments > session
 export async function deletePost(request, response) {
   const { postId } = request.params;
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
-    const deleting = await Post.findByIdAndDelete(postId);
-    if (!deleting)
-      return response.status(404).json({ message: "Post not found" });
+    const commentsToDelete = await Comment.deleteMany({post: postId}).session(session); 
+    const deleting = await Post.findByIdAndDelete(postId).session(session);
 
-    response.json({ post: deleting });
+    if (!deleting)
+      throw new Error(`Post ${postId} not found, unable to delete`);
+    await session.commitTransaction();
+    return response.json({ post: deleting });
   } catch (err) {
+    await session.abortTransaction();
     return response.status(500).json({
       message: `Something went wrong while tryng to delete post ${postId}`,
       error: err.message,
     });
+  } finally{
+    session.endSession();
   }
 }
