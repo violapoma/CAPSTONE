@@ -11,14 +11,15 @@ import authMW from "./middlewares/authMW.js";
 import notificationRouter from "./routers/notification.router.js";
 import communityRouter from "./routers/community.router.js";
 import { validate } from "./middlewares/validate.js";
-import { userIdValidator } from "./validators/user.validator.js";
-import { userAccessMw } from "./middlewares/userAccessMw.js";
 import postRouter from "./routers/post.router.js";
 import { communityIdValidator } from "./validators/community.validator.js";
 import { checkExistingCommunityMw } from "./middlewares/checkExistingCommunityMw.js";
 import { postIdValidator } from "./validators/post.validator.js";
 import { checkExistingPostMw } from "./middlewares/checkExistingPostMw.js";
 import commentRouter from "./routers/comment.router.js";
+import { checkUserInCommunityMw } from "./middlewares/checkUserInCommunityMw.js";
+import { userIdValidator } from "./validators/user.validator.js";
+import { checkExistingUserMw } from "./middlewares/checkExistingUserMw.js";
 
 
 const server = express();
@@ -31,11 +32,11 @@ server.use(express.json());
 //routers
 server.use('/auth', authRouter);
 server.use('/me', authMW, meRouter); 
-server.use('/users', authMW, userRouter);
+server.use('/users/:userId', authMW, validate(userIdValidator), checkExistingUserMw, userRouter);
 server.use('/communities', authMW, communityRouter);
 server.use('/notifications', authMW, notificationRouter);
 server.use('/follows', authMW, followRouter); 
-server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, postRouter);
+server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, checkUserInCommunityMw, postRouter);
 //server.use('/posts', authMW, postRouter);
 server.use('/posts/:postId/comments', authMW, checkExistingPostMw, validate(postIdValidator), commentRouter);
 //??? va bene così la rotta di comments? 

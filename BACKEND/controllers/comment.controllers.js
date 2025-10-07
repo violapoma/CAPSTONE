@@ -69,7 +69,7 @@ export async function editComment(request, response) {
   const { commentId } = request.params;
   const payload = request.body; //just content
   try {
-    const comment = await Comment.findByIdAndUpdate(commentId, payload, {
+    const comment = await Comment.findOneAndUpdate({_id: commentId, author: request.loggedUser.id,}, payload, {
       new: true,
     });
     if (!comment)
@@ -90,7 +90,7 @@ export async function deleteComment(request, response) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const deleting = await Comment.findById(commentId).session(session);
+    const deleting = await Comment.findOne({_id: commentId, author: request.loggedUser.id,}).session(session);
     if (deleting.child) {
       await deleteChildComment(deleting.child, session);
     }

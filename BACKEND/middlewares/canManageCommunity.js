@@ -9,10 +9,6 @@ export async function canManageCommunity(request, response, next) {
 
   try {
     const community = await Community.findById(communityId);
-    if (!community)
-      return response
-        .status(404)
-        .json({ message: `Could NOT find community with id ${communityId}` });
     if (logged.role === "admin" || community.moderator.toString() === logged.id)
       next();
     else

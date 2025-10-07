@@ -4,10 +4,10 @@ import { joiObjectId, joiObjectIdArray, joiObjectIdNotRequired } from "../helper
 export const commentValidator = Joi.object({
   parent: joiObjectIdNotRequired(),
   author: joiObjectIdNotRequired(),
-  content: Joi.string().max(300),
+  content: Joi.string().max(300).required(),
   likes: joiObjectIdArray(),
   displikes: joiObjectIdArray(),
-});
+}).unknown(true);
 
 export const commentIdValidator = Joi.object({
   commentId: joiObjectId() 

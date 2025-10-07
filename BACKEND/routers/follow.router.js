@@ -8,12 +8,14 @@ import {
   getFollowList,
   unfollowUser,
 } from "../controllers/follow.controllers.js";
+import { checkExistingUserMw } from "../middlewares/checkExistingUserMw.js";
 
 const followRouter = express.Router();
 
 followRouter.post(
   "/:followingId",
   validate(followingUserValidator),
+  checkExistingUserMw,
   followUser
 );
 
@@ -38,6 +40,7 @@ followRouter.get(
 
 followRouter.delete('/:followingId', 
   validate(followingUserValidator),
+  checkExistingUserMw,
   unfollowUser
 );
 

@@ -1,6 +1,6 @@
 import express from 'express'; 
 import { addComment, deleteComment, editComment, getAllPostComments, getSingleComment } from '../controllers/comment.controllers.js';
-import { commentIdValidator } from '../validators/comment.validator.js';
+import { commentIdValidator, commentValidator } from '../validators/comment.validator.js';
 import { checkExistingCommentMw } from '../middlewares/checkExistingCommentMw.js';
 import { validate } from '../middlewares/validate.js';
 import { changeReactionFor } from '../helpers/changeReactionFor.js';
@@ -8,10 +8,12 @@ import { Comment } from '../models/Comment.js';
 
 const commentRouter = express.Router({mergeParams: true});
 
-commentRouter.post('/', addComment);
+commentRouter.post('/', validate(commentValidator, 'body'), addComment);
 commentRouter.post('/:commentId', validate(commentIdValidator), checkExistingCommentMw, addComment); 
+
 commentRouter.get('/', getAllPostComments);
 commentRouter.get('/:commentId', validate(commentIdValidator), checkExistingCommentMw, getSingleComment); 
+
 commentRouter.patch('/:commentId', validate(commentIdValidator), checkExistingCommentMw, editComment); 
 commentRouter.patch(
   "/:commentId/like",

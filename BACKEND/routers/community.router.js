@@ -15,7 +15,6 @@ import {
   getAllCommunities,
   getById,
   getByStatus,
-  getMyCommunitiesAs,
   joinCommunity,
   leaveCommunity,
 } from "../controllers/community.controllers.js";
@@ -23,7 +22,7 @@ import { validate } from "../middlewares/validate.js";
 import { uploadCommunityCover } from "../middlewares/uploadCloudinary.js";
 import { adminMw } from "../middlewares/adminMw.js";
 import { canManageCommunity } from "../middlewares/canManageCommunity.js";
-
+import { checkExistingCommunityMw } from "../middlewares/checkExistingCommunityMw.js";
 const communityRouter = express.Router();
 
 communityRouter.post(
@@ -49,27 +48,14 @@ communityRouter.get(
   },
   getByStatus
 );
-communityRouter.get(
-  "/moderator-of",
-  (request, response, next) => {
-    request.type = "moderator";
-    next();
-  },
-  getMyCommunitiesAs
-);
-communityRouter.get(
-  "/member-of",
-  (request, response, next) => {
-    request.type = "member";
-    next();
-  },
-  getMyCommunitiesAs
-);
-communityRouter.get("/:communityId", validate(communityIdValidator), getById);
+
+communityRouter.get("/:communityId", validate(communityIdValidator), checkExistingCommunityMw, getById);
 
 communityRouter.patch(
   "/:communityId/description",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
+  canManageCommunity,
   (request, response, next) => {
     request.type = "description";
     next();
@@ -80,6 +66,8 @@ communityRouter.patch(
 communityRouter.patch(
   "/:communityId/status",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
+  canManageCommunity,
   (request, response, next) => {
     request.type = "status";
     next();
@@ -91,6 +79,8 @@ communityRouter.patch(
 communityRouter.patch(
   "/:communityId/style",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
+  canManageCommunity,
   (request, response, next) => {
     request.type = "style";
     next();
@@ -101,23 +91,28 @@ communityRouter.patch(
 communityRouter.patch(
   "/:communityId/cover",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
+  canManageCommunity,
   uploadCommunityCover.single("cover"),
   changeCover
 );
 communityRouter.patch(
   "/:communityId/join",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
   joinCommunity
 );
 communityRouter.patch(
   "/:communityId/leave",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
   leaveCommunity
 );
 
 communityRouter.delete(
   "/:communityId",
   validate(communityIdValidator),
+  checkExistingCommunityMw,
   canManageCommunity,
   deleteCommunity
 );

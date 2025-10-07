@@ -15,16 +15,16 @@ import {
   updatePostValidator,
 } from "../validators/post.validator.js";
 import { checkCommunityActiveApprovedMw } from "../middlewares/checkCommunityStatusActive.js";
-import { checkExistingCommunityMw } from "../middlewares/checkExistingCommunityMw.js";
 import { uploadPostCover } from "../middlewares/uploadCloudinary.js";
 import { changeReactionFor } from "../helpers/changeReactionFor.js";
 import { Post } from "../models/Post.js";
+import { checkExistingPostMw } from "../middlewares/checkExistingPostMw.js";
+import { canManageCommunity } from "../middlewares/canManageCommunity.js";
 
 const postRouter = express.Router({ mergeParams: true });
-
+//already check of existing community and user in community and loggeduser
 postRouter.post(
   "/",
-  checkExistingCommunityMw,
   checkCommunityActiveApprovedMw,
   validate(postValidator, "body"),
   createPost
@@ -32,15 +32,21 @@ postRouter.post(
 
 postRouter.get("/", getAllCommunityPosts);
 //TODO: GET by user
-postRouter.get("/:postId", validate(postIdValidator), getPost);
+postRouter.get(
+  "/:postId",
+  validate(postIdValidator),
+  checkExistingPostMw,
+  getPost
+);
+
 
 postRouter.patch(
   "/:postId",
   validate(postIdValidator),
+  checkExistingPostMw,
   validate(updatePostValidator),
   editPost
 );
-// postRouter.patch('/:postId/like', validate(postIdValidator),likePost);
 postRouter.patch(
   "/:postId/like",
   (request, response, next) => {
@@ -48,6 +54,7 @@ postRouter.patch(
     next();
   },
   validate(postIdValidator),
+  checkExistingPostMw,
   changeReactionFor(Post)
 );
 postRouter.patch(
@@ -57,15 +64,22 @@ postRouter.patch(
     next();
   },
   validate(postIdValidator),
+  checkExistingPostMw,
   changeReactionFor(Post)
 );
 postRouter.patch(
   "/:postId/cover",
   validate(postIdValidator),
+  checkExistingPostMw,
   uploadPostCover.single("cover"),
   changePostCover
 );
 
-postRouter.delete("/:postId", validate(postIdValidator), deletePost);
+postRouter.delete(
+  "/:postId",
+  validate(postIdValidator),
+  checkExistingPostMw,
+  deletePost
+);
 
 export default postRouter;

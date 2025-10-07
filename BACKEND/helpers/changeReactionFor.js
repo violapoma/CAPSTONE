@@ -16,8 +16,6 @@ export function changeReactionFor(Model) {
     
       const id = Model === Comment ? commentId : postId;
       const doc = await Model.findById(id);
-      //if (!doc) return response.status(404).json({ message: "Document not found" });
-      //removes opposite reaction (if present)
       const oppositeIndex = doc[oppositeField].findIndex(id => id.toString() === userId);
       if (oppositeIndex !== -1) doc[oppositeField].splice(oppositeIndex, 1);
 

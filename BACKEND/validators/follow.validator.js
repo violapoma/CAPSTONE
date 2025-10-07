@@ -7,9 +7,9 @@ export const followValidator = Joi.object({
 }); 
 
 export const followingUserValidator = Joi.object({
-  followingId: joiObjectId().required(),
+  followingId: joiObjectId(),
 });
 
 export const followUserId = Joi.object({
-  userId: joiObjectId().required(),
+  userId: joiObjectId(),
 }); 

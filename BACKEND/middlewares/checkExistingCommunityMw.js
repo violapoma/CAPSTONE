@@ -4,7 +4,7 @@ export async function checkExistingCommunityMw(request, response, next) {
   const { communityId } = request.params;
   try {
     const community = await Community.findById(communityId);
-    if (!communityId)
+    if (!community)
       return response
         .status(404)
         .json({ message: `Could NOT find community with id ${communityId}` });

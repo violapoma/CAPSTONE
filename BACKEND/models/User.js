@@ -11,7 +11,8 @@ const UserSchema = new Schema({
   },
   password: {
     type: String,
-    required: true,
+    match: [/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, 'invalid password'],
+    select: false
   },
   role: {
     type: String,

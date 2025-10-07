@@ -5,9 +5,7 @@ const MIN_MEMBERS = Number(process.env.MIN_MEMBERS);
 export async function createCommunity(request, response) {
   console.log('entering controller');
   let payload = request.body;
-  const userId = request.loggedUser?.id;
-  if (!userId)
-    return response.status(401).json({ message: "User NOT authenticated" });
+  const userId = request.loggedUser.id;
   try {
     const existing = await Community.findOne({ name: payload.name });
     if (existing)
@@ -59,33 +57,10 @@ export async function getByStatus(request, response) {
   }
 }
 
-export async function getMyCommunitiesAs(request, response) {
-  const type = request.type;
-  const id = request.loggedUser?.id;
-  if (!id || !["moderator", "member"].includes(type))
-    return response.status(400).json({ message: "Invalid request" });
-  try {
-    let query = {};
-    if (type === "moderator") query = { moderator: id };
-    else if (type === "member") query = { members: id };
-    const typeCommunities = await Community.find(query);
-    return response.status(200).json({ communities: typeCommunities });
-  } catch (err) {
-    return response.status(500).json({
-      message: `Something went wrong while tryng to fetch ${type} community for user with id ${id}`,
-      error: err.message,
-    });
-  }
-}
-
 export async function getById(request, response) {
   const id = request.params.communityId;
   try {
     const community = await Community.findById(id);
-    if (!community)
-      return response.status(404).json({
-        message: `Could NOT find community with id ${id}`,
-      });
     return response.status(200).json({ community });
   } catch (err) {
     return response.status(500).json({
@@ -112,10 +87,6 @@ export async function changeField(request, response) {
     const updating = await Community.findByIdAndUpdate(id, query, {
       new: true,
     });
-    if (!updating)
-      return response
-        .status(404)
-        .json({ message: `Could NOT find community with id ${id}` });
 
     return response.status(200).json({ community: updating });
   } catch (err) {
@@ -139,10 +110,6 @@ export async function changeCover(request, response) {
       { cover: imgPath },
       { new: true }
     );
-    if (!updating)
-      return response
-        .status(404)
-        .json({ message: `Could NOT find community with id ${id}` });
     return response.status(200).json({ community: updating });
   } catch (err) {
     return response.status(500).json({
@@ -157,10 +124,6 @@ export async function joinCommunity(request, response) {
   const userId = request.loggedUser.id;
   try {
     const community = await Community.findById(communityId).populate("members");
-    if (!community)
-      return response.status(404).json({
-        message: `Could NOT find community with id ${communityId}`,
-      });
     const alreadyIn = community.members.find(
       (user) => user._id.toString() === userId
     );
@@ -187,10 +150,6 @@ export async function leaveCommunity(request, response) {
   const userId = request.loggedUser.id;
   try {
     const community = await Community.findById(communityId);
-    if (!community)
-      return response.status(404).json({
-        message: `Could NOT find community with id ${communityId}`,
-      });
     const alreadyIn = community.members.find(
       (user) => user._id.toString() === userId
     );

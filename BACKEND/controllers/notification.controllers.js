@@ -42,7 +42,6 @@ export async function createNotification(request, response) {
  * @returns all notification for a specified user
  */
 export async function getAllNotifications(request, response) {
-  //const { userId } = request.params;
   const userId = request.loggedUser.id; 
   try {
     const user = await User.findById(userId);
