@@ -1,8 +1,8 @@
 ## ROUTERS
 ### /auth
-- **POST /register**
+- **POST /register**<br />
 Creates a new user via database. It also logges in the new user. 
-- **POST /login**
+- **POST /login**<br />
 Logges in a user via database. 
 
 ### /me
@@ -22,11 +22,15 @@ Updates logged user's password.
 Deletes logged user from database
 
 ### /users
-- **GET /:userId**<br />
+- _controls_ 
+ - _validate userId_: checks if the id Is mobgolse format via joi. <br />
+ - _checkExistingUser_: Middleware that checks if the user exists in database. <br />
+- *Endpoints**
+ - **GET /:userId**<br />
 Returns the user with id userId, if existing. 
-- **GET /:userId/posts**<br />
+ - **GET /:userId/posts**<br />
 Returns all posts made by user with id userId. 
-- **GET /:userId/communities**<br />
+ - **GET /:userId/communities**<br />
 Returns all communities of which user with id userId in member or moderator in the following format: {moderating, member}
 
 ### /users/:userId/notifications
