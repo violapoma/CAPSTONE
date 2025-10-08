@@ -23,9 +23,9 @@ Deletes logged user from database
 
 ### /users
 - _controls_ 
- - _validate userId_: checks if the id Is mobgolse format via joi. <br />
- - _checkExistingUser_: Middleware that checks if the user exists in database. <br />
-- *Endpoints**
+  - _validate userId_: checks if the id is mobgolse format via joi. <br />
+  - _checkExistingUser_: Middleware that checks if the user exists in database. <br />
+- **Endpoints**
  - **GET /:userId**<br />
 Returns the user with id userId, if existing. 
  - **GET /:userId/posts**<br />
@@ -34,6 +34,8 @@ Returns all posts made by user with id userId.
 Returns all communities of which user with id userId in member or moderator in the following format: {moderating, member}
 
 ### /users/:userId/notifications
+- _controls_
+ - _validate userId_
 - **POST /**<br />
 Creates a new notification for userId.
 - **GET /**<br />
