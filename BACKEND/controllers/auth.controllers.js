@@ -1,4 +1,5 @@
 import { signJWT } from "../helpers/jwt.js";
+import mailer from "../helpers/mailer.js";
 import User from "../models/User.js";
 
 export async function register(request, response) {
@@ -14,6 +15,27 @@ export async function register(request, response) {
     await newUser.save();
 
     const token = signJWT({ id: newUser._id }); //logging user
+
+    const html = `
+    <h1>Hi, ${newUser.username}, <b>WELCOME!</b></h1>
+    <h2>What you can do:</h2>
+    <ul>
+      <li>You can join any community available, depending on your interests</li>
+      <li>You can make a proposal for a new community! Of course, this community must be pre-approved by our team, so make sure to explain in details what you want this community to be. Once your idea is approved and the quota of ${process.env.MIN_MEMBERS} members is reached, your community will beacome active! Also, you can promote your community on your profile. <b>Beware, if at any moment our team notices a content they deem inappropriate, your community will be deleted</b>, so make sure to keep an eye on its content.</li>
+      <li>Needless to say, you can help another creator start their community by becoming a member while the community is not active yet.</li>
+      <li>Make sure to follow all the users you like the most!</li>
+    </ul>
+    <h2>Have fun!</h2>
+    <p>And please remember to always respect other users</p>
+    <p>→<a href='${process.env.FRONTEND_HOST}/users/${newUser._id}'>CLICK HERE</a>← to visit your profile</p>
+  `;
+  
+  const infoMail = await mailer.sendMail({
+    to: newUser.email, 
+    subject: `Thanks for joining us!`,
+    html: html,
+    from: "violapoma@gmail.com", 
+  });
 
     return response.status(201).json({ user: newUser, jwt: token });
   } catch (err) {
@@ -42,4 +64,8 @@ export async function login(request, response) {
       .status(500)
       .json({ message: "error during login", error: err.message });
   }
+}
+
+export async function redirectToMe(request, response, next) {
+  response.redirect(`${process.env.FRONTEND_HOST}/auth/google-callback?jwt=${request.loggedUser.jwt}`); //messo da me in request.user.jwt
 }

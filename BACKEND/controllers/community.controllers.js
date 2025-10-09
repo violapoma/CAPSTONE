@@ -1,9 +1,10 @@
+import mailer from "../helpers/mailer.js";
 import Community from "../models/Community.js";
+import { communityIdValidator } from "../validators/community.validator.js";
 
 const MIN_MEMBERS = Number(process.env.MIN_MEMBERS);
 
 export async function createCommunity(request, response) {
-  console.log('entering controller');
   let payload = request.body;
   const userId = request.loggedUser.id;
   try {
@@ -42,7 +43,6 @@ export async function getAllCommunities(request, response) {
   }
 }
 
-
 export async function getByStatus(request, response) {
   const reqStauts = request.type;
   try {
@@ -70,22 +70,58 @@ export async function getById(request, response) {
   }
 }
 
-export async function changeField(request, response) {
-  const type = request.type;
+export async function updateCommunity(request, response) {
   const id = request.params.communityId;
   const payload = request.body;
 
-  if (!id || !["description", "style", "status"].includes(type))
-    return response.status(400).json({ message: "Invalid request" });
   try {
-    let query = {};
-    if (type === "description") query = { description: payload.description };
-    else if (type === "style") query = { style: payload };
-    else if (type === "status") query = { status: payload.status };
-    console.log("query", query);
-    console.log("Updating community", id, "with status", payload.status);
-    const updating = await Community.findByIdAndUpdate(id, query, {
+    const updating = await Community.findByIdAndUpdate(id, payload, {
       new: true,
+    });
+
+    return response.status(200).json({ community: updating });
+  } catch (err) {
+    return response.status(500).json({
+      message: `Something went wrong while tryng to update community with id ${id}`,
+      error: err.message,
+    });
+  }
+}
+
+export async function changeStatus(request, response) {
+  const id = request.params.communityId;
+  const { status } = request.body;
+
+  try {
+    const updating = await Community.findByIdAndUpdate(
+      id,
+      { status },
+      {
+        new: true,
+      }
+    );
+
+    const html = `
+    <h1>Hi, ${request.loggedUser.username}.</h1>
+    <h2>Your community ${updating.name} has been ${status}</h2>
+    <p>
+    ${
+      status === "approved" &&
+      `All is left to do is reach at least${process.env.MIN_MEMBERS} members! There's no time limit, but make sure to contact your friends to star chatting about ${updating.topic}!`
+    }
+    ${
+      status === "rejected" &&
+      "Our team did not find your proposal appropriate, feel free to contact us for more info."
+    } 
+    </p>
+    To your next idea!
+  `;
+
+    const infoMail = await mailer.sendMail({
+      to: request.loggedUser.email,
+      subject: `Thanks for joining ${community.name}!`,
+      html: html,
+      from: "violapoma@gmail.com",
     });
 
     return response.status(200).json({ community: updating });
@@ -132,9 +168,32 @@ export async function joinCommunity(request, response) {
         message: `User ${request.loggedUser.username} is already member of '${community.name}'`,
       });
     community.members.push(userId);
-    if (community.members.length > MIN_MEMBERS) 
-      community.active = true;
-    //TODO: send mail to members
+    if (community.members.length > MIN_MEMBERS) community.active = true;
+    //TODO: send mail to member
+    const html = `
+      <h1>Hi, ${
+        request.loggedUser.username
+      }, <b>WELCOME TO ${community.name.toUpperCase()}</b></h1>
+      <h2>Our guidelines</h2>
+      <p>Please, remember to post only appropriate content.
+      ${
+        community.guidelines &&
+        "Make sure you follow our guidelines. The community moderator is allowed to remove you or your content they deem it necessary.<br>" +
+          guidelines
+      }
+      That being said, we hope to have a nice time together 🥰</p>
+      <p>→<a href='${process.env.FRONTEND_HOST}/communities/${
+      community._id
+    }'>CLICK HERE</a>← to visit ${community.name}</p>
+    `;
+
+    const infoMail = await mailer.sendMail({
+      to: request.loggedUser.email,
+      subject: `Thanks for joining ${community.name}!`,
+      html: html,
+      from: "violapoma@gmail.com",
+    });
+
     await community.save();
     return response.status(200).json({ community });
   } catch (err) {
@@ -149,7 +208,10 @@ export async function leaveCommunity(request, response) {
   const { communityId } = request.params;
   const userId = request.loggedUser.id;
   try {
-    const community = await Community.findById(communityId);
+    const community = await Community.findById(communityId).populate(
+      "members",
+      "email username"
+    );
     const alreadyIn = community.members.find(
       (user) => user._id.toString() === userId
     );
@@ -160,9 +222,26 @@ export async function leaveCommunity(request, response) {
     community.members = community.members.filter(
       (user) => user._id.toString() !== userId
     );
-    if (community.members.length<MIN_MEMBERS)
+    if (community.members.length < MIN_MEMBERS) {
       community.active = false;
-    //TODO: send mail to members and admin 
+      //TODO: send mail to members and admin
+      const recipients = community.members.map((member) => member.email);
+      const html = `
+    <h1>Hey 😪</h1>
+    <h2>Unfortunately, community ${community.name} does not have enough members to keep on being active</h2>
+    <p>
+    We are sorry, but we need to close it. Feel free to try again in the future, we can't wait to have more posts about ${community.topic}!
+    </p>
+    To your next idea!
+  `;
+      const infoMail = await mailer.sendMail({
+        bcc: recipients,
+        to: "violapoma@gmail.com",
+        subject: `Community ${community.name} has not enough members to stay up`,
+        html: html,
+        from: "violapoma@gmail.com",
+      });
+    }
     await community.save();
     return response.status(200).json({ community });
   } catch (err) {
@@ -174,14 +253,32 @@ export async function leaveCommunity(request, response) {
 }
 
 export async function deleteCommunity(request, response) {
-  const {communityId} = request.params;
+  const { communityId } = request.params;
   try {
     const deleting = await Community.findByIdAndDelete(communityId);
     if (!deleting)
       return response
         .stauts(404)
         .json({ message: `Could NOT find community with id ${communityId}` });
-    //TODO: send notification to all members that the community has been cancelled
+    //TODO: send notification to all members that the community -with status active- has been cancelled
+    if (deleting.status === "active") {
+      const recipients = deleting.members.map((member) => member.email);
+      const html = `
+    <h1>Hey 😪</h1>
+    <h2>Unfortunately, community ${deleting.name} no longer exists.</h2>
+    <p>
+    We are sorry! This can either be due to a code violation or to the moderator free will. Anyway, we hope you had a good time and, who knows, in the future you can try and open your very own communty with the same topic! 
+    </p>
+    To your next idea!
+  `;
+      const infoMail = await mailer.sendMail({
+        bcc: recipients,
+        to: "violapoma@gmail.com",
+        subject: `Community ${community.name} has not enough members to stay up`,
+        html: html,
+        from: "violapoma@gmail.com",
+      });
+    }
     return response.status(200).json({ community: deleting });
   } catch (err) {
     return response.status(500).json({

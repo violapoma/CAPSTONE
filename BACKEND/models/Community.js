@@ -6,6 +6,7 @@ const CommunitySchema = new mongoose.Schema(
     topic: [{ type: String, required: true, immutable: true }],
     cover: { type: String, default: "https://res.cloudinary.com/dm9gnud6j/image/upload/v1759663013/nocover_d78avw.jpg" },
     description: { type: String, required: true, max: 600},
+    guidelines: String,
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

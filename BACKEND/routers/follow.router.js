@@ -5,22 +5,22 @@ import {
 } from "../validators/follow.validator.js";
 import {
   followUser,
-  getFollowList,
   unfollowUser,
 } from "../controllers/follow.controllers.js";
 import { checkExistingUserMw } from "../middlewares/checkExistingUserMw.js";
+import { getFollowList } from "../helpers/getFollowList.js";
 
 const followRouter = express.Router();
 
 followRouter.post(
-  "/:followingId",
+  "/add/:followingId",
   validate(followingUserValidator),
   checkExistingUserMw,
   followUser
 );
 
 followRouter.get(
-  "/followers",
+  "/:userId/followers",
   (request, response, next) => {
     request.type = "followers";
     next();
@@ -29,7 +29,7 @@ followRouter.get(
 );
 
 followRouter.get(
-  "/following",
+  ":userId/following",
   (request, response, next) => {
     request.type = "following";
     next();
@@ -38,7 +38,7 @@ followRouter.get(
 );
 
 
-followRouter.delete('/:followingId', 
+followRouter.delete('/remove/:followingId', 
   validate(followingUserValidator),
   checkExistingUserMw,
   unfollowUser

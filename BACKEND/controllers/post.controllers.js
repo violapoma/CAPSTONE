@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { Post } from "../models/Post.js";
 import { Comment } from "../models/Comment.js";
-import { response } from "express";
 
 export async function createPost(request, response) {
   let payload = request.body;
@@ -38,7 +37,7 @@ export async function getAllCommunityPosts(request, response) {
   const filter = { inCommunity: communityId };
   if (userId) filter.author = userId;
   try {
-    const posts = await Post.find(filter);
+    const posts = await Post.find(filter).sort({createdAt: -1});
     return response.status(200).json({ posts });
   } catch (err) {
     return response.status(500).json({
@@ -49,19 +48,6 @@ export async function getAllCommunityPosts(request, response) {
     });
   }
 }
-
-// export async function getUserPosts(request, response){
-//   const {userId} = request.params;
-//   try{
-//     const posts = await Post.find({author: userId}).sort({ createdAt: -1 });
-//     return response.status(200).json({posts});
-//   } catch (err) {
-//     return response.status(500).json({
-//       message: `Something went wrong while tryng to fetch all posts for user ${userId}`,
-//       error: err.message,
-//     });
-//   }
-// }
 
 export async function getPost(request, response) {
   const { postId } = request.params;
@@ -140,6 +126,23 @@ export async function deletePost(request, response) {
       author: request.loggedUser.id,
     }).session(session);
 
+    if(request.loggedUser.id !== deleting.author) {
+      const recipients = deleting.members.map((member) => member.email);
+      const html = `
+    <h1>Hey 😪</h1>
+    <h2>Unfortunately, your post ${deleting.title} has been deleted.</h2>
+    <p>
+    Our staff or the community moderator did not find it appropriate. We advise you to change the subject or review the community guidelines before you try again! Feel free to contact us for any additional info.
+    </p>
+    To your next idea!
+  `;
+      const infoMail = await mailer.sendMail({
+        to: deleting.author,
+        subject: `Your post '${deleting.title}' has been deleted`,
+        html: html,
+        from: "violapoma@gmail.com",
+      });
+    }
     if (!deleting)
       throw new Error(`Permission denied, you do not own this post`);
     await session.commitTransaction();

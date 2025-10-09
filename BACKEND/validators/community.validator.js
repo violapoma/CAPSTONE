@@ -9,6 +9,7 @@ export const communityValidator = Joi.object({
     .try(Joi.string(), Joi.array().items(Joi.string()))
     .required(),
   description: Joi.string().required().max(600),
+  guidelines: Joi.string().optional(),
   status: Joi.string().valid("pending", "approved", "rejected"),
   active: Joi.boolean().default(false),
   style: Joi.object({
@@ -25,8 +26,14 @@ export const communityIdValidator = Joi.object({
   communityId: joiObjectId().required(),
 }).unknown(true);
 
-export const changeDescrValidator = Joi.object({
+export const updateCommunityValidator = Joi.object({
   description: Joi.string().min(1).max(600).required(),
+  guidelines: Joi.string(),
+  style: Joi.object({
+    backgroundColor: Joi.string().pattern(exaPattern).default("#f7f3f2"),
+    titleColor: Joi.string().pattern(exaPattern).default("#000000"),
+    secondaryColor: Joi.string().pattern(exaPattern).default("#d5c9c9"),
+  }).default().required(),
 });
 
 export const changeStatusValidator = Joi.object({
@@ -39,4 +46,7 @@ export const changeStyleValidator = Joi.object({
     titleColor: Joi.string().pattern(exaPattern).default("#000000"),
     secondaryColor: Joi.string().pattern(exaPattern).default("#d5c9c9"),
   }).default().required(),
+});
+export const changeDescrValidator = Joi.object({
+  description: Joi.string().min(1).max(600).required(),
 });

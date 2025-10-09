@@ -1,15 +1,13 @@
 import express from "express";
 
 import {
-  changeDescrValidator,
   changeStatusValidator,
-  changeStyleValidator,
   communityIdValidator,
   communityValidator,
 } from "../validators/community.validator.js";
 import {
   changeCover,
-  changeField,
+  changeStatus,
   createCommunity,
   deleteCommunity,
   getAllCommunities,
@@ -17,6 +15,7 @@ import {
   getByStatus,
   joinCommunity,
   leaveCommunity,
+  updateCommunity,
 } from "../controllers/community.controllers.js";
 import { validate } from "../middlewares/validate.js";
 import { uploadCommunityCover } from "../middlewares/uploadCloudinary.js";
@@ -52,42 +51,16 @@ communityRouter.get(
 communityRouter.get("/:communityId", validate(communityIdValidator), checkExistingCommunityMw, getById);
 
 communityRouter.patch(
-  "/:communityId/description",
-  validate(communityIdValidator),
-  checkExistingCommunityMw,
-  canManageCommunity,
-  (request, response, next) => {
-    request.type = "description";
-    next();
-  },
-  validate(changeDescrValidator, "body"),
-  changeField
-);
-communityRouter.patch(
   "/:communityId/status",
   validate(communityIdValidator),
   checkExistingCommunityMw,
-  canManageCommunity,
-  (request, response, next) => {
-    request.type = "status";
-    next();
-  },
   adminMw(["admin"]),
   validate(changeStatusValidator, 'body'),
-  changeField
+  changeStatus
 );
-communityRouter.patch(
-  "/:communityId/style",
-  validate(communityIdValidator),
-  checkExistingCommunityMw,
-  canManageCommunity,
-  (request, response, next) => {
-    request.type = "style";
-    next();
-  },
-  validate(changeStyleValidator, "body"),
-  changeField
-);
+
+communityRouter.put('/:communityId', validate(communityIdValidator), checkExistingCommunityMw, updateCommunity);
+
 communityRouter.patch(
   "/:communityId/cover",
   validate(communityIdValidator),

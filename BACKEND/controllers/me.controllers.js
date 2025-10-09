@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import FollowConnection from "../models/FollowConnection.js";
 import Community from "../models/Community.js";
+import { Post } from "../models/Post.js";
+import { Comment } from "../models/Comment.js";
 
 /**
  * @param {*} request
@@ -121,8 +123,6 @@ export async function deleteMe(request, response) {
   const id = request.loggedUser.id;
   const session = await mongoose.startSession();
   session.startTransaction();
-  //TODO HELL
-  //TODO: cancel posts, likes, comments
 
   try {
     //follow connection
@@ -137,16 +137,26 @@ export async function deleteMe(request, response) {
       { session }
     );
 
-    //community - moderator
-    await Community.deleteMany({ moderator: id }).session(session);
+    //community - moderator> update with admin as moderator 
+    const admin = await User.findOne({ username: "admin" });
+    if (admin) {
+      await Community.updateMany(
+        { moderator: id },
+        { moderator: admin._id },
+        { session }
+      );
+    }
 
     //posts, comments, likes
+    await Comment.updateMany({}, { $pull: { likes: id, dislikes: id } }).session(session);
+    await Post.updateMany({}, { $pull: { likes: id, dislikes: id } }).session(session);
+    await Post.deleteMany({ author: id }).session(session);
+    await Comment.deleteMany({ author: id }).session(session);
 
     //deleting user
     const deleting = await User.findByIdAndDelete(id).session(session);
 
-    if (!deleting)
-      throw new Error(`User ${id} not found, unable to delete`);
+    if (!deleting) throw new Error(`User ${id} not found, unable to delete`);
 
     await session.commitTransaction();
     return response

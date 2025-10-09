@@ -35,11 +35,9 @@ server.use('/me', authMW, meRouter);
 server.use('/users/:userId', authMW, validate(userIdValidator), checkExistingUserMw, userRouter);
 server.use('/communities', authMW, communityRouter);
 server.use('/notifications', authMW, notificationRouter);
-server.use('/follows', authMW, followRouter); 
+server.use('/follow-list', authMW, followRouter); 
 server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, checkUserInCommunityMw, postRouter);
-//server.use('/posts', authMW, postRouter);
 server.use('/posts/:postId/comments', authMW, checkExistingPostMw, validate(postIdValidator), commentRouter);
-//??? va bene così la rotta di comments? 
 
 //error 404
 server.use((req, res, next) => {

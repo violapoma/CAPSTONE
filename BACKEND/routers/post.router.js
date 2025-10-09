@@ -1,7 +1,6 @@
 import express from "express";
 import {
   changePostCover,
-  //changeReaction,
   createPost,
   deletePost,
   editPost,
@@ -19,10 +18,9 @@ import { uploadPostCover } from "../middlewares/uploadCloudinary.js";
 import { changeReactionFor } from "../helpers/changeReactionFor.js";
 import { Post } from "../models/Post.js";
 import { checkExistingPostMw } from "../middlewares/checkExistingPostMw.js";
-import { canManageCommunity } from "../middlewares/canManageCommunity.js";
+import { canDeletePostMw } from "../middlewares/canDeletePostMw.js";
 
 const postRouter = express.Router({ mergeParams: true });
-//already check of existing community and user in community and loggeduser
 postRouter.post(
   "/",
   checkCommunityActiveApprovedMw,
@@ -31,14 +29,12 @@ postRouter.post(
 );
 
 postRouter.get("/", getAllCommunityPosts);
-//TODO: GET by user
 postRouter.get(
   "/:postId",
   validate(postIdValidator),
   checkExistingPostMw,
   getPost
 );
-
 
 postRouter.patch(
   "/:postId",
@@ -79,6 +75,7 @@ postRouter.delete(
   "/:postId",
   validate(postIdValidator),
   checkExistingPostMw,
+  canDeletePostMw,
   deletePost
 );
 
