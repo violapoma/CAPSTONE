@@ -24,6 +24,6 @@ export const editUserValidator = Joi.object({
 export const changeLoggedUserPassword = Joi.object({
   password: Joi.string()
     .min(8)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/)
     .required(),
 });

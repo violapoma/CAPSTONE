@@ -6,12 +6,12 @@ export const userValidator = Joi.object({
     .required(),
   password: Joi.string()
     .min(8)
-    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
+    .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/)
     .required(),
-  role: Joi.string().valid("admin", "user").default('user').required(),
+  role: Joi.string().valid("admin", "user").default('user'),
 
   firstName: Joi.string().required(),
-  lastName: Joi.string(),
+  lastName: Joi.string().allow("").optional(),
   dateOfBirth: Joi.date()
     .less("now")
     .required()
@@ -29,7 +29,8 @@ export const userValidator = Joi.object({
     .min(3)
     .required()
     .pattern(/(?![_.])[A-Za-z0-9._]+(?<![_.])/),
-  bio: Joi.string().trim().max(300),
+  bio: Joi.string().trim().max(300).allow("").optional(),
+  profilePic: Joi.string().allow("").optional(),
 });
 
 export const userIdValidator = Joi.object({

@@ -33,7 +33,7 @@ server.use(express.json());
 server.use('/auth', authRouter);
 server.use('/me', authMW, meRouter); 
 server.use('/users/:userId', authMW, validate(userIdValidator), checkExistingUserMw, userRouter);
-server.use('/communities', authMW, communityRouter);
+server.use('/communities', communityRouter);
 server.use('/notifications', authMW, notificationRouter);
 server.use('/follow-list', authMW, followRouter); 
 server.use('/communities/:communityId/posts', authMW, validate(communityIdValidator), checkExistingCommunityMw, checkUserInCommunityMw, postRouter);

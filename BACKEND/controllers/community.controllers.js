@@ -45,10 +45,12 @@ export async function getAllCommunities(request, response) {
 
 export async function getByStatus(request, response) {
   const reqStauts = request.type;
+  let query = {status: request.type}; 
+  if(request.type === 'approved') query.active= true; 
   try {
-    const okCommunities = await Community.find({ status: reqStauts });
+    const okCommunities = await Community.find(query);
 
-    return response.status(200).json({ communities: okCommunities });
+    return response.status(200).json(okCommunities);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch all ${req.status} communities`,

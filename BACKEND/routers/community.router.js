@@ -22,15 +22,10 @@ import { uploadCommunityCover } from "../middlewares/uploadCloudinary.js";
 import { adminMw } from "../middlewares/adminMw.js";
 import { canManageCommunity } from "../middlewares/canManageCommunity.js";
 import { checkExistingCommunityMw } from "../middlewares/checkExistingCommunityMw.js";
+import authMW from "../middlewares/authMW.js";
 const communityRouter = express.Router();
 
-communityRouter.post(
-  "/",
-  validate(communityValidator, "body"),
-  createCommunity
-);
-
-communityRouter.get("/", getAllCommunities);
+//oublic route
 communityRouter.get(
   "/approved",
   (request, response, next) => {
@@ -39,6 +34,17 @@ communityRouter.get(
   },
   getByStatus
 );
+
+//protected routes
+communityRouter.use(authMW);
+communityRouter.post(
+  "/",
+  validate(communityValidator, "body"),
+  createCommunity
+);
+
+communityRouter.get("/", getAllCommunities);
+
 communityRouter.get(
   "/pending",
   (request, response, next) => {

@@ -1,0 +1,320 @@
+:root{
+  --primary-color: #8A8CAC; 
+  --secondary-color: #FBCFE8;
+  --neutral-light-color: #9DACCC; 
+  --neutral-medium-color: #C0C9DB;
+  --primary-text-color: #121524;
+  --title-text-color: #4B1535;
+  --title-text-hover: #BB8588;
+  --emph-color: #3A3E6C; 
+  --vegan-bg: #7D947D;
+  --gaming-bg: #45165b;
+  --anime-bg: #4dcdea;
+  --wn-bg: #010c2a;
+  --pale-red: #F95D4E;
+  --hover-transition: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.bgEmph{
+  background-color: var(--emph-color) !important;
+}
+.bgEmph:hover{
+  background-color: var(--title-text-color) !important;
+}
+.bgLight{
+  background-color: var(--neutral-light-color);
+}
+.borderEmph{
+  border: 1px solid var(--emph-color) !important;
+}
+.titleColor{
+  color: var(--title-text-color);
+}
+
+/* general styles */
+body{
+  background-color: var(--neutral-medium-color)!important;
+  color: var(--primary-text-color);
+  font-family: "Helvetica", "Arial", sans-serif;
+}
+a{
+  text-decoration: none;
+  color: inherit;
+}
+iframe{
+  width: 12em;
+  height: 12em;
+  background-color: var(--gaming-bg);
+  border-radius: 50%;
+}
+p{
+  font-size: 1.3em;
+}
+section {
+  background-color: var(--neutral-light-color);
+  color: var(--primary-text-color);
+}
+footer {
+  height: 15em;
+  background-color: var(--neutral-light-color);
+}
+footer h2{
+  padding-right: 0.5em;
+}
+footer ul{
+  padding-right: 1em;
+}
+footer li{
+  list-style-type: none;
+}
+footer li:hover, footer button:hover{
+  transform: scale(1.2) translateX(-30px);
+  transition: transform 0.5s var(--hover-transition); 
+}
+footer button{
+  margin-right: 0.3em;
+}
+.button:hover{
+  transform: scale(1.1);
+  transition: transform 0.3s var(--hover-transition) ;
+  cursor: pointer;
+}
+svg:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s var(--hover-transition) ;
+}
+
+/* loader */
+.loaderContainer{
+  z-index: 9999;
+}
+
+/* nav */
+.navbarStyle{
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+}
+#nav-avatar-dropdown{
+  cursor: pointer;
+}
+.dropdown-menu{
+  background-color: var(--neutral-light-color) !important;
+  color: var(--primary-text-color) !important;
+  box-shadow: var(--emph-color) 0px 3px 3px 0px;
+}
+.dropdown-menu>a{
+  width: 80%;
+  margin: auto;
+  padding: 0.3em 0.7em;
+}
+.dropdown-menu>a:hover{
+  transform: scale(1.03) translateX(10px);
+  transition: transform 0.5s var(--hover-transition);
+  background-color: inherit;
+}
+.dropdownAvatar{
+  width: 3em;
+  height: 3em;
+  object-fit: cover;
+  background-color: white;
+  border: 1px solid var(--emph-color);
+}
+.dropdown-header {
+  color: var(--primary-text-color);
+  font-size: large;
+  font-weight: 600;
+}
+
+/* login */
+.login-bg{
+  background-image: url('./login-bg.svg');
+  background-color: var(--primary-color) !important;
+}
+
+/* register */
+.dragAndDrop{
+  border: 2px dashed #ccc;
+  padding: 1em;
+  text-align: center;
+  cursor: pointer;
+  width: 250px;
+  height: 250px;
+}
+.bg-dragging{
+  background-color: #f0f0f0;
+}
+.asterisk{
+  color: var(--pale-red);
+  font-weight: bold;
+  font-size: 1.3em;
+}
+.bioTextArea{
+  /* position: relative; */
+  padding-top: 1.5em; 
+  resize: none;
+}
+.charCounter{
+  position: absolute;
+  padding: 0.5em 1em;
+  top: 3em;
+  right: 2em;
+  font-size: 0.8em;
+  pointer-events: none;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);}
+
+/* home */
+.homeAlert{
+  background-color: var(--neutral-light-color);
+  color: var(--primary-text-color);
+  border: none;
+}
+.accordion-button, .accordion-button:not(.collapsed){
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+  box-shadow: none !important;
+}
+
+/* author preview */
+.authorCard:hover{
+  transform: scale(1.03);
+  transition: transform 0.2s var(--hover-transition);
+}
+
+/* post preview */
+.postPreviewImg {
+  width: 90%;
+  height: 200px;
+  object-fit: cover;
+}
+.postPreview:hover, .profilePreview:hover{
+  transform: scale(1.01) translateX(10px);
+  transition: transform 0.5s var(--hover-transition);
+}
+
+.badge-coding{
+  background-color: var(--emph-color) !important;
+}
+.badge-mental-health{
+  background-color: var(--title-text-color) !important;
+}
+.badge-vegan{
+  background-color: var(--vegan-bg) !important;
+}
+.badge-gaming{
+  background-color: var(--gaming-bg) !important;
+}
+.badge-anime{
+  background-color: var(--anime-bg) !important;
+  color: var(--primary-text-color) !important; 
+}
+.badge-world-news{
+  background-color: var(--wn-bg) !important;
+}
+.badge-default{
+  background-color: var(--primary-color) !important;
+  color: var(--primary-text-color);
+}
+
+/* add user*/
+.avatarPreview{
+  display: block;
+  width: 247px;
+  height: 247px;
+  object-fit: cover;
+  margin:auto;
+  border-radius: 50%;
+}
+
+/* user profile */
+.profileImg {
+  width: 6em;
+  height: 6em; 
+  object-fit: cover;
+  border-radius: 50%;
+}
+.vh50{
+  height: 50vh;
+}
+.h80pc{
+  height: 60%;
+}
+.vh60{
+  height: 60vh;
+}
+.vh85{
+  height: 85vh;
+}
+.vh90{
+  height: 90vh;
+}
+.mw-75{
+  max-width: 75%;
+}
+.mw-70{
+  max-width: 70%;
+}
+.profilePreviewImg{
+  width: 4em;
+  height: 4em; 
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* post details */
+#postContent{
+  width: 80%;
+  margin: 3em auto;
+}
+.postImg{
+  display: block;
+  width: 80%;
+  margin: auto;
+  object-fit: contain;
+}
+
+/* add post */
+.coverPreview{
+  display: block;
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+  margin:auto;
+}
+.ql-toolbar {
+  border-radius: 8px 8px 0 0;
+}
+.my-editor .ql-container {
+  background-color: white;
+  border-radius: 0 0 8px 8px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  height: 40vh;
+}
+.my-editor {
+  width: 100%;
+}
+.commentEditor .ql-container{
+  height: 100px;
+  font-size: 12px;
+}
+.preview-box {
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: whitesmoke;
+}
+.preview-content {
+  line-height: 1.6;
+}
+
+/* comments */
+.authorLink{
+  display: inline-block;
+  font-weight: bold;
+  transition: transform 0.3s var(--hover-transition), text-shadow 0.3s var(--hover-transition);
+}
+.authorLink:hover{
+  transform: scale(1.05) translateX(5px);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1); /* leggera ombra */
+}
