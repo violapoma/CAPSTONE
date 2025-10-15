@@ -7,14 +7,14 @@ export async function getUserCommunities(request, response) {
     return response.status(400).json({ message: "User ID missing" });
   }
   try {
-    const moderating = await Community.find({ moderator: id }).sort({
+    const moderatorOf = await Community.find({ moderator: id }).sort({
       createdAt: -1,
     });
     const memberOf = await Community.find({
       members: id,
       moderator: { $ne: id },
     });
-    return response.status(200).json({ moderating, memberOf });
+    return response.status(200).json({ moderatorOf, memberOf });
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch all communities for user ${id}`,

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Form, Col, Button, Row } from "react-bootstrap";
 
-function CustomFileInput({ addProfilePic }) {
+function CustomFileInput({ addPic }) {
   const fileRef = useRef(null);
   const [fileName, setFileName] = useState("");
 
@@ -20,7 +20,7 @@ function CustomFileInput({ addProfilePic }) {
     reader.onloadend = () => setPreview(reader.result);
     reader.readAsDataURL(file);
 
-    addProfilePic({ target: { files } });
+    addPic({ target: { files } });
   };
 
   //to open file picker
@@ -40,7 +40,6 @@ function CustomFileInput({ addProfilePic }) {
 
   return (
     <Form.Group as={Row} controlId="validationImage" className="flex-column align-items-center">
-      <Form.Label>Profile picture</Form.Label>
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}

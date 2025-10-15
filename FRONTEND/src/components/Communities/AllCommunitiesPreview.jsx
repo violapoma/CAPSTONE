@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "../../data/axios";
-import { useAuthContext } from "../contexts/authContext";
+import axios from "../../../data/axios";
+import { useAuthContext } from "../../contexts/authContext";
 import { Col, Row, Spinner } from "react-bootstrap";
 import CommunityPreview from "./CommunityPreview";
-import { useSignUpProvider } from "../contexts/signUpContext";
-import ErrorModal from "./ErrorModal";
+import { useSignUpProvider } from "../../contexts/signUpContext";
+import ErrorModal from "../Modals/ErrorModal";
 
 function AllCommunitiesPreview({ fromRegister }) {
   const {
@@ -70,12 +70,12 @@ function AllCommunitiesPreview({ fromRegister }) {
           setShow={setShowErrorModal}
         />
       )}
-      <h3 className="text-center">Choose your first community </h3>
+     <h3 className="text-center">Choose your first community </h3>
       <Row className="my-5">
         {communities.map((comm) => (
           <Col
             sm={6}
-            className="button"
+            className="hovering"
             onClick={() => setChosenCommunity(comm._id)}
           >
             <CommunityPreview key={comm._id} community={comm} />

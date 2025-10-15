@@ -1,5 +1,5 @@
 import { useSignUpProvider } from "../../contexts/signUpContext";
-import AllCommunitiesPreview from "../AllCommunitiesPreview";
+import AllCommunitiesPreview from "../Communities/AllCommunitiesPreview";
 
 function Step4() {
   const { formData, profilePic } = useSignUpProvider();

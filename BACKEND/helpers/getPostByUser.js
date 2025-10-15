@@ -7,8 +7,8 @@ export async function getPostByUser(request, response) {
     return response.status(400).json({ message: "User ID missing" });
   }
   try {
-    const posts = await Post.find({ author: id }).sort({ createdAt: -1 });
-    return response.status(200).json({ posts });
+    const posts = await Post.find({ author: id }).sort({ createdAt: -1 }).populate('inCommunity author');
+    return response.status(200).json( posts );
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch all posts for user ${id}`,

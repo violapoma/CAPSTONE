@@ -19,24 +19,24 @@ import { getFollowList } from "../helpers/getFollowList.js";
 const meRouter = express.Router();
 
 meRouter.get("/", getMe);
-meRouter.get("/posts", getPostByUser);
-meRouter.get("/communities", getUserCommunities);
-meRouter.get(
-  "/followers",
-  (request, response, next) => {
-    request.type = "followers";
-    next();
-  },
-  getFollowList
-);
-meRouter.get(
-  "/following",
-  (request, response, next) => {
-    request.type = "following";
-    next();
-  },
-  getFollowList
-);
+// meRouter.get("/posts", getPostByUser);
+// meRouter.get("/communities", getUserCommunities);
+// meRouter.get(
+//   "/followers",
+//   (request, response, next) => {
+//     request.type = "followers";
+//     next();
+//   },
+//   getFollowList
+// );
+// meRouter.get(
+//   "/following",
+//   (request, response, next) => {
+//     request.type = "following";
+//     next();
+//   },
+//   getFollowList
+// );
 meRouter.put("/", validate(editUserValidator, "body"), editMe);
 meRouter.patch(
   "/password",

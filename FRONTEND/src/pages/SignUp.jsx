@@ -1,6 +1,6 @@
 import { useSignUpProvider } from "../contexts/signUpContext";
 import StepRenderer from "../components/SignUp/StepRenderer";
-import ErrorModal from "../components/ErrorModal";
+import ErrorModal from "../components/Modals/ErrorModal";
 import {
   Button,
   Card,
@@ -35,10 +35,11 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Dati finali:", formData);
+    console.log("Final data:", formData);
     setSignUpLoader(true);
     try {
       await createUser();
+      //TODO: MIGLIORA
       alert("Registrazione completata!");
     } catch (err) {
       setConsoleMsg("Error during account creation");

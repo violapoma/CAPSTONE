@@ -1,14 +1,18 @@
 import { Accordion, Button, Form, Modal } from "react-bootstrap";
 import {useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../../data/axios";
-import { useAuthContext } from "../contexts/authContext";
+import axios from "../../../data/axios";
+import { useAuthContext } from "../../contexts/authContext";
+import ErrorModal from "./ErrorModal";
 
 export function LoginModal({ showLogin, setShowLogin }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [showError, setShowError] = useState(false); 
+  const [consoleMsg, setConsoleMsg] = useState('');
 
   const { login } = useAuthContext();
   const navigate = useNavigate();
@@ -40,10 +44,11 @@ export function LoginModal({ showLogin, setShowLogin }) {
       setShowError(true); 
       console.log("errore di login", err);
     }
-    setShowLogin(false);
+    //setShowLogin(false);
   };
 
   return (
+    <>
     <Modal show={showLogin} onHide={() => setShowLogin(false)} centered>
       <Modal.Header closeButton>
         <Modal.Title>Login</Modal.Title>
@@ -100,5 +105,7 @@ export function LoginModal({ showLogin, setShowLogin }) {
         </Accordion>
       </Modal.Body>
     </Modal>
+    <ErrorModal consoleMsg={consoleMsg} show={showError} setShow={setShowError} />
+    </>
   );
 }

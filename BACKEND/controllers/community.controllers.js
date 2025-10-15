@@ -32,9 +32,9 @@ export async function createCommunity(request, response) {
 
 export async function getAllCommunities(request, response) {
   try {
-    const communities = await Community.find();
+    const communities = await Community.find().populate('members moderator');
 
-    return response.status(200).json({ communities });
+    return response.status(200).json( communities );
   } catch (err) {
     return response.status(500).json({
       message: "Something went wrong while tryng to fetch all communities",
@@ -62,8 +62,8 @@ export async function getByStatus(request, response) {
 export async function getById(request, response) {
   const id = request.params.communityId;
   try {
-    const community = await Community.findById(id);
-    return response.status(200).json({ community });
+    const community = await Community.findById(id).populate('members moderator');
+    return response.status(200).json(community);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch community with id ${id}`,

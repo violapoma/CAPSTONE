@@ -52,7 +52,7 @@ export async function getAllCommunityPosts(request, response) {
 export async function getPost(request, response) {
   const { postId } = request.params;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).sort({createdAt: -1}).populate('inCommunity author');
     return response.status(200).json({ post });
   } catch (err) {
     return response.status(500).json({
@@ -94,16 +94,17 @@ export async function changePostCover(request, response) {
     return response
       .status(400)
       .json({ message: "Picture not found in request" });
+      console.log(imgPath);
   try {
     const updating = await Post.findOneAndUpdate(
-      { _id: postId, authror: request.loggedUser.id },
+      { _id: postId },
       { cover: imgPath },
       { new: true }
     );
     if (!updating)
       return response
         .status(404)
-        .json({ message: `Could NOT find post with id ${postId}` });
+        .json({ message: `Could NOT add pic to post with id ${postId}` });
     return response.status(200).json({ post: updating });
   } catch (err) {
     return response.status(500).json({

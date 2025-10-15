@@ -1,3 +1,6 @@
+import FollowConnection from "../models/FollowConnection.js";
+import User from "../models/User.js";
+
 /**
  * This controller uses a previous inline controller that adds the field 'type' in request, which tells this function if we want the follower list or the following list.
  * @param {*} request 

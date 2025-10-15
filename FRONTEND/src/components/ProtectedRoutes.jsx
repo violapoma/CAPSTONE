@@ -8,7 +8,7 @@ function ProtectedRoutes() {
   return (
     <>
       {token ? <Outlet /> : <Navigate to="/login" replace />}
-      <Footer />
+    
     </>
   );
 }

@@ -9,8 +9,8 @@ function CommunityPreview({community}){
       <Card.Body>
         <Card.Title style={{color: community.style.titleColor}}>{community.name}</Card.Title>
         <Card.Text>
-          {community.topic.map((t) => (
-            <Badge pill style={{backgroundColor: `${community.style.secondaryColor}+!important` }}>
+          {community.topic.map((t, idx) => (
+            <Badge key={idx} pill style={{backgroundColor: `${community.style.secondaryColor}+!important` }}>
               {t}
             </Badge>
           ))}
