@@ -7,12 +7,13 @@ export async function getUserCommunities(request, response) {
     return response.status(400).json({ message: "User ID missing" });
   }
   try {
-    const moderatorOf = await Community.find({ moderator: id }).sort({
+    const moderatorOf = await Community.find({ moderator: id, status: 'approved' }).sort({
       createdAt: -1,
     });
     const memberOf = await Community.find({
       members: id,
       moderator: { $ne: id },
+      status: 'approved'
     });
     return response.status(200).json({ moderatorOf, memberOf });
   } catch (err) {

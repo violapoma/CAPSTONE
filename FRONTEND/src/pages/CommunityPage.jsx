@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axiosInstance from "../../../data/axios";
-import CommunityHeader from "./CommunityHeader";
-import { useAuthContext } from "../../contexts/authContext";
+import axiosInstance from "../../data/axios";
+import CommunityHeader from "../components/Communities/CommunityHeader";
+import { useAuthContext } from "../contexts/authContext";
+import CommunityPostContainer from "../components/Communities/CommunitypostContainer";
+import { Container } from "react-bootstrap";
+import MyLoader from "../components/Helpers/MyLoader";
 
 function CommunityPage() {
   const { commId } = useParams();
@@ -39,6 +42,10 @@ function CommunityPage() {
     }
   };
 
+  const handleUpdateCommunity = (updatedCommunity) => {
+    setCommunity(updatedCommunity);
+  };
+
   useEffect(() => {
     if (commId && loggedUser?._id) {
       fetchCommunity();
@@ -47,15 +54,28 @@ function CommunityPage() {
 
   return (
     <>
-      {!loading && community && (
-        <CommunityHeader
-          community={community}
-          amIMember={amIMember}
-          amIModerator={amIModerator}
-        />
+      {loading ? (
+          <MyLoader />
+      ) : community ? (
+        <>
+          <CommunityHeader
+            community={community}
+            amIMember={amIMember}
+            amIModerator={amIModerator}
+            onUpdateCommunity={handleUpdateCommunity}
+          />
+          
+          {amIMember ? (
+            <CommunityPostContainer communityId={commId} />
+          ) : (
+            <p className="text-center mt-5">devi essere membro per vedere i contenuti</p>
+          )}
+        </>
+      ) : (
+        <p className="text-center mt-5">
+          {consoleMsg || "There was a problem while loading community"}
+        </p>
       )}
-      {amIMember ? (<p>contenuto community</p>):(<p>devi essere membro per veder ei contenuti</p>)}
-
     </>
   );
 }

@@ -15,6 +15,7 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
   const [loadingEnlist, setLoadingEnlist] = useState(null);
 
   const [alreadyMember, setAlreadymember] = useState(false);
+  const [isMine, setIsMine] = useState(false); 
 
   const handleClose = () => {
     setShowCommDetails(false);
@@ -55,7 +56,9 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
         setAlreadymember(
           isMember
         );
+        const mine = !!res.data.moderator._id === loggedUser._id; 
         console.log("isMember", isMember);
+        console.log('mine', mine); 
         console.log("altreadyMember", alreadyMember);
         setCommunity(res.data);
       } catch (err) {
@@ -78,17 +81,17 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
           <Modal.Header closeButton className="border-0" />
           <Modal.Body className="scrollmodal">
             <Card className="border-0">
-              <Card.Img src={community.cover} />
+              <Card.Img src={community?.cover} />
               <Card.Body
                 className="community-banner rounded"
-                style={{ ...communityCSSVars(community.style) }}
+                style={{ ...communityCSSVars(community?.style) }}
               >
-                <Card.Title>{community.name}</Card.Title>
+                <Card.Title>{community?.name}</Card.Title>
                 <Card.Text>
-                  {community.members.length} /{" "}
+                  {community?.members.length} /{" "}
                   {import.meta.env.VITE_MIN_MEMBERS}
                 </Card.Text>
-                <Card.Text>{community.description}</Card.Text>
+                <Card.Text>{community?.description}</Card.Text>
               </Card.Body>
               <Card.Footer className="border-0 bg-transparent">
                 <Row className="align-items-center">

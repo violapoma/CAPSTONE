@@ -1,18 +1,21 @@
+import { useEffect, useState } from "react";
 import { ListGroup, Modal, Nav, Tab } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../contexts/authContext";
 
 function DetailsModal({
   followers = [],
   following = [],
-  communities = [],
+  activeAsModerator = [],
+  activeAsMember = [],
   showDetails,
   setShowDetails,
 }) {
+  const {loggedUser} = useAuthContext();
+
   const handleClose = () => {
     setShowDetails(false);
   };
-  console.log("followers:", followers);
-
   return (
     <Modal
       show={showDetails}
@@ -23,7 +26,6 @@ function DetailsModal({
       <Modal.Header closeButton className="border-0" />
       <Modal.Body className="scrollmodal">
         <Tab.Container defaultActiveKey="followers">
-          {/* Nav sopra */}
           <Nav variant="underline" justify>
             <Nav.Item>
               <Nav.Link eventKey="followers">Followers</Nav.Link>
@@ -36,18 +38,16 @@ function DetailsModal({
             </Nav.Item>
           </Nav>
 
-          {/* Contenuto tab */}
           <Tab.Content>
             <Tab.Pane eventKey="followers">
               <ListGroup>
                 {followers?.length > 0 ? (
                   followers.map((f) => {
-                    console.log("f.follower.username", f.follower.username);
                     return (
-                      <ListGroup.Item key={f._id} className="listing">
-                        <Link to={`/users/${f.follower._id}`}>
+                      <ListGroup.Item key={f._id} className="listing" onClick={handleClose}>
+                        <Link to={f.follower._id === loggedUser._id ? "/" :`/users/${f.follower?._id}`}>
                           <img
-                            src={f.follower.profilePic}
+                            src={f.follower?.profilePic}
                             className="profilePicList me-3"
                             alt="profilePic"
                           />
@@ -66,10 +66,10 @@ function DetailsModal({
               <ListGroup>
                 {following?.length ? (
                   following.map((f) => (
-                    <ListGroup.Item key={f._id} className="listing">
-                      <Link to={`/users/${f.following._id}`}>
+                    <ListGroup.Item key={f._id} className="listing" onClick={handleClose}>
+                      <Link to={f.following._id === loggedUser._id ? "/" :`/users/${f.following?._id}`}>
                         <img
-                          src={f.following.profilePic}
+                          src={f.following?.profilePic}
                           className="profilePicList me-3"
                           alt="profilePic"
                         />
@@ -85,8 +85,8 @@ function DetailsModal({
 
             <Tab.Pane eventKey="communities">
               <ListGroup>
-                {communities?.moderatorOf?.length ||
-                communities?.memberOf?.length ? (
+                {activeAsModerator?.length ||
+                activeAsMember?.length ? (
                   <Tab.Container defaultActiveKey="member">
                     <Nav variant="underline" justify>
                       <Nav.Item>
@@ -99,10 +99,10 @@ function DetailsModal({
                     <Tab.Content>
                       <Tab.Pane eventKey="moderator">
                         <ListGroup>
-                          {communities?.moderatorOf?.length ? (
-                            communities?.moderatorOf?.map((c) => (
-                              <Link to={`/communities/${c._id}`}>
-                                <ListGroup.Item key={c._id} className="listing">
+                          {activeAsModerator.length > 0  ? (
+                            activeAsModerator.map((c) => (
+                              <Link to={`/communities/${c._id}`} key={c._id}>
+                                <ListGroup.Item className="listing" onClick={handleClose}>
                                   {c.name}
                                 </ListGroup.Item>
                               </Link>
@@ -116,10 +116,10 @@ function DetailsModal({
                       </Tab.Pane>
                       <Tab.Pane eventKey="member">
                         <ListGroup>
-                          {communities?.memberOf?.length ? (
-                            communities?.memberOf?.map((c) => (
-                              <Link to={`/communities/${c._id}`}>
-                                <ListGroup.Item key={c._id} className="listing">
+                          {activeAsMember.length > 0 ? (
+                            activeAsMember.map((c) => (
+                              <Link to={`/communities/${c._id}`} key={c._id} onClick={handleClose}>
+                                <ListGroup.Item  className="listing">
                                   {c.name}
                                 </ListGroup.Item>
                               </Link>

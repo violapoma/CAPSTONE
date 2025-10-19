@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 import { useState } from "react";
 import { useSignUpLoaderProvider } from "../contexts/loaderSignUpContext";
-import MyLoader from "../components/MyLoader";
+import MyLoader from "../components/Helpers/MyLoader";
 
 function SignUp() {
   const {

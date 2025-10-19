@@ -1,5 +1,7 @@
+import { createNotification } from "../helpers/createNotification.js";
 import mailer from "../helpers/mailer.js";
 import Community from "../models/Community.js";
+import User from "../models/User.js";
 import { communityIdValidator } from "../validators/community.validator.js";
 
 const MIN_MEMBERS = Number(process.env.MIN_MEMBERS);
@@ -11,7 +13,7 @@ export async function createCommunity(request, response) {
     const existing = await Community.findOne({ name: payload.name });
     if (existing)
       return response
-        .stauts(409)
+        .status(409)
         .json({ message: `${payload.name} is already taken` });
 
     payload.moderator = userId;
@@ -21,7 +23,7 @@ export async function createCommunity(request, response) {
 
     await newCommunity.save();
 
-    return response.status(201).json({ community: newCommunity });
+    return response.status(201).json( newCommunity );
   } catch (err) {
     return response.status(500).json({
       message: "Something went wrong while tryng to create a new community",
@@ -32,9 +34,9 @@ export async function createCommunity(request, response) {
 
 export async function getAllCommunities(request, response) {
   try {
-    const communities = await Community.find().populate('members moderator');
+    const communities = await Community.find().populate("members moderator");
 
-    return response.status(200).json( communities );
+    return response.status(200).json(communities);
   } catch (err) {
     return response.status(500).json({
       message: "Something went wrong while tryng to fetch all communities",
@@ -45,8 +47,8 @@ export async function getAllCommunities(request, response) {
 
 export async function getByStatus(request, response) {
   const reqStauts = request.type;
-  let query = {status: request.type}; 
-  if(request.type === 'approved') query.active= true; 
+  let query = { status: request.type };
+  if (request.type === "approved") query.active = true;
   try {
     const okCommunities = await Community.find(query);
 
@@ -62,7 +64,9 @@ export async function getByStatus(request, response) {
 export async function getById(request, response) {
   const id = request.params.communityId;
   try {
-    const community = await Community.findById(id).populate('members moderator');
+    const community = await Community.findById(id).populate(
+      "members moderator"
+    );
     return response.status(200).json(community);
   } catch (err) {
     return response.status(500).json({
@@ -81,7 +85,7 @@ export async function updateCommunity(request, response) {
       new: true,
     });
 
-    return response.status(200).json({ community: updating });
+    return response.status(200).json(updating);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to update community with id ${id}`,
@@ -103,6 +107,10 @@ export async function changeStatus(request, response) {
       }
     );
 
+    const admin = await User.findOne({email: 'admin@gmail.com'}); 
+    if(!admin)
+    throw new Error('admin not found'); 
+
     const html = `
     <h1>Hi, ${request.loggedUser.username}.</h1>
     <h2>Your community ${updating.name} has been ${status}</h2>
@@ -121,15 +129,26 @@ export async function changeStatus(request, response) {
 
     const infoMail = await mailer.sendMail({
       to: request.loggedUser.email,
-      subject: `Thanks for joining ${community.name}!`,
+      subject: `News regarding ${updating.name}!`,
       html: html,
       from: "violapoma@gmail.com",
     });
 
-    return response.status(200).json({ community: updating });
+    await createNotification(updating.moderator, {
+      from: admin._id,
+      category: 'community',
+      source: updating._id,
+      sourceModel: 'Community',
+      meta: {
+        details: status,
+        communityName: updating.name
+      }
+    }); 
+
+    return response.status(200).json(updating);
   } catch (err) {
     return response.status(500).json({
-      message: `Something went wrong while tryng to update ${type} of community with id ${id}`,
+      message: `Something went wrong while tryng to update staus of community with id ${id}`,
       error: err.message,
     });
   }
@@ -148,7 +167,7 @@ export async function changeCover(request, response) {
       { cover: imgPath },
       { new: true }
     );
-    return response.status(200).json({ community: updating });
+    return response.status(200).json(updating);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to update the cover of the community with id ${id}`,
@@ -197,7 +216,7 @@ export async function joinCommunity(request, response) {
     });
 
     await community.save();
-    return response.status(200).json({ community });
+    return response.status(200).json(community);
   } catch (err) {
     return response.status(500).json({
       message: `${request.loggedUser.username} could NOT follow community with id ${communityId}`,
@@ -208,21 +227,41 @@ export async function joinCommunity(request, response) {
 
 export async function leaveCommunity(request, response) {
   const { communityId } = request.params;
-  const userId = request.loggedUser.id;
+  const userId = request.loggedUser._id;
   try {
     const community = await Community.findById(communityId).populate(
       "members",
       "email username"
     );
+    console.log("community in leaveComm", community);
     const alreadyIn = community.members.find(
-      (user) => user._id.toString() === userId
+      (user) => user._id.toString() === userId.toString()
     );
+
+    console.log("-----------------------------------------");
+    console.log("ADMIN ID (string):", request.adminId.toString());
+    console.log("Logged User ID (string):", userId.toString());
+    console.log("Community Moderator ID:", community.moderator);
+    console.log("Moderator ID (string):", community.moderator.toString());
+    console.log(
+      "Is current user the moderator?",
+      community.moderator.toString() === userId.toString()
+    );
+    console.log("-----------------------------------------");
+
     if (!alreadyIn)
       return response.status(409).json({
         message: `User ${request.loggedUser.username} is NOT member of '${community.name}' yet`,
       });
+
+    let shouldUpdateModerator = false;
+    if (community.moderator._id.toString() === userId.toString()) {
+      community.moderator = request.adminId;
+      community.markModified("moderator");
+    }
+
     community.members = community.members.filter(
-      (user) => user._id.toString() !== userId
+      (user) => user._id.toString() !== userId.toString()
     );
     if (community.members.length < MIN_MEMBERS) {
       community.active = false;
@@ -245,7 +284,7 @@ export async function leaveCommunity(request, response) {
       });
     }
     await community.save();
-    return response.status(200).json({ community });
+    return response.status(200).json(community);
   } catch (err) {
     return response.status(500).json({
       message: `${request.loggedUser.username} could NOT follow community with id ${communityId}`,
@@ -260,7 +299,7 @@ export async function deleteCommunity(request, response) {
     const deleting = await Community.findByIdAndDelete(communityId);
     if (!deleting)
       return response
-        .stauts(404)
+        .status(404)
         .json({ message: `Could NOT find community with id ${communityId}` });
     //TODO: send notification to all members that the community -with status active- has been cancelled
     if (deleting.status === "active") {
@@ -276,12 +315,12 @@ export async function deleteCommunity(request, response) {
       const infoMail = await mailer.sendMail({
         bcc: recipients,
         to: "violapoma@gmail.com",
-        subject: `Community ${community.name} has not enough members to stay up`,
+        subject: `Community ${deleting.name} has not enough members to stay up`,
         html: html,
         from: "violapoma@gmail.com",
       });
     }
-    return response.status(200).json({ community: deleting });
+    return response.status(200).json(deleting);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to delete community with id ${communityId}`,

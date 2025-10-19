@@ -19,7 +19,7 @@ export async function createPost(request, response) {
     payload.author = userId;
     const newPost = new Post(payload);
     await newPost.save();
-    return response.status(201).json({ post: newPost });
+    return response.status(201).json(newPost );
   } catch (err) {
     return response.status(500).json({
       message: "Something went wrong while tryng to create a new post",
@@ -38,7 +38,7 @@ export async function getAllCommunityPosts(request, response) {
   if (userId) filter.author = userId;
   try {
     const posts = await Post.find(filter).sort({createdAt: -1});
-    return response.status(200).json({ posts });
+    return response.status(200).json( posts );
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch all posts for community ${communityId} ${
@@ -52,8 +52,8 @@ export async function getAllCommunityPosts(request, response) {
 export async function getPost(request, response) {
   const { postId } = request.params;
   try {
-    const post = await Post.findById(postId).sort({createdAt: -1}).populate('inCommunity author');
-    return response.status(200).json({ post });
+    const post = await Post.findById(postId).sort({createdAt: -1}).populate('author');
+    return response.status(200).json( post );
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to fetch post ${postId}`,
@@ -78,7 +78,7 @@ export async function editPost(request, response) {
         .status(403)
         .json({ message: "You are not allowed to edit this post" });
     }
-    response.json({ post: updating });
+    response.json(updating);
   } catch (err) {
     return response.status(500).json({
       message: `Something went wrong while tryng to update post ${postId}`,
@@ -89,6 +89,7 @@ export async function editPost(request, response) {
 
 export async function changePostCover(request, response) {
   const { postId } = request.params;
+  const userId = request.loggedUser._id; 
   const imgPath = request.file?.path;
   if (!imgPath)
     return response
@@ -97,7 +98,7 @@ export async function changePostCover(request, response) {
       console.log(imgPath);
   try {
     const updating = await Post.findOneAndUpdate(
-      { _id: postId },
+      { _id: postId, author: userId },
       { cover: imgPath },
       { new: true }
     );
@@ -105,10 +106,10 @@ export async function changePostCover(request, response) {
       return response
         .status(404)
         .json({ message: `Could NOT add pic to post with id ${postId}` });
-    return response.status(200).json({ post: updating });
+    return response.status(200).json(updating);
   } catch (err) {
     return response.status(500).json({
-      message: `Something went wrong while tryng to update the cover of the post with id ${id}`,
+      message: `Something went wrong while tryng to update the cover of the post with id ${postId}`,
       error: err.message,
     });
   }
@@ -124,7 +125,7 @@ export async function deletePost(request, response) {
     }).session(session);
     const deleting = await Post.findOneAndDelete({
       _id: postId,
-      author: request.loggedUser.id,
+      author: request.loggedUser_id,
     }).session(session);
 
     if(request.loggedUser.id !== deleting.author) {
@@ -147,7 +148,7 @@ export async function deletePost(request, response) {
     if (!deleting)
       throw new Error(`Permission denied, you do not own this post`);
     await session.commitTransaction();
-    return response.json({ post: deleting });
+    return response.json(deleting );
   } catch (err) {
     await session.abortTransaction();
     return response.status(500).json({

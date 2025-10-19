@@ -20,6 +20,11 @@ async function authMW(request, response, next) {
     if (!user) {
       return response.status(401).json({ message: "User associated with token not found" });
     }
+    const admin = await User.findOne({email: 'admin@gmail.com'});
+    if (!admin) {
+      console.error("ERRORE: Utente Admin non trovato!"); 
+  }
+    request.adminId = admin ? admin._id : null;
     request.loggedUser = user; //adding loggedUser field in request obj
     next();
   } catch (err) {

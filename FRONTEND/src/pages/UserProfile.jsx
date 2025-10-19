@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
-import MyLoader from "../components/MyLoader";
+import MyLoader from "../components/Helpers/MyLoader";
 import axiosInstance from "../../data/axios";
 import { useFollowers } from "../hooks/useFollowers";
 import { useFollowing } from "../hooks/useFollowing";
@@ -46,7 +46,7 @@ function UserProfile({ isMe }) {
     }
   };
 
-  const { followers, loadingFollowers, errorFollowers } =
+  const { followers, setFollowers, loadingFollowers, errorFollowers } =
     useFollowers(actualId);
   const { following, loadingFollowing, errorFollowing } =
     useFollowing(actualId);
@@ -54,16 +54,38 @@ function UserProfile({ isMe }) {
   const { communities, stillNotActive, loadingCommunities, errorCommunities } =
     useCommunities(actualId);
 
-  // Effect to fetch user on mount or when relevant dependencies change
-  useEffect(() => {
-    if (!token) return;
-
-    if (isMe && loggedUser) {
-      setUser(loggedUser);
-    } else {
-      getUser();
-    }
-  }, [token, userId, isMe, loggedUser]);
+    useEffect(() => {
+      if (!token || (isMe && !loggedUser)) return;
+  
+      setLoadingUser(true);
+      setUser(null); // Reset dello stato
+  
+      const fetchUser = async () => {
+        try {
+          if (isMe) {
+            setUser(loggedUser);
+          } else {
+            const res = await axiosInstance.get(`/users/${userId}`);
+            setUser(res.data);
+          }
+        } catch (err) {
+          setConsoleMsg("An error occurred while fetching the profile 😿 try again later");
+          setShowErrorModal(true);
+          console.error(err);
+        } finally {
+          setLoadingUser(false);
+        }
+      };
+      
+      // Chiama il fetch solo se userId è disponibile (per i visitatori)
+      if (!isMe && userId) {
+        fetchUser();
+      } else if (isMe && loggedUser) {
+          // Chiama il fetch per il mio profilo se sono loggato
+          fetchUser();
+      }
+      
+    }, [token, userId, isMe, loggedUser]);
 
   // Effect to log other infos once user is available
   useEffect(() => {
@@ -74,10 +96,13 @@ function UserProfile({ isMe }) {
       !loadingFollowers &&
       !loadingFollowing
     ) {
+      console.log("--------------------------------------------");
+      console.log("User:", user);
       console.log("Posts:", posts);
       console.log("Communities:", communities);
       console.log("Followers:", followers);
       console.log("Following:", following);
+      console.log("--------------------------------------------");
     }
   }, [
     user,
@@ -112,9 +137,11 @@ function UserProfile({ isMe }) {
                 followers={followers}
                 following={following}
                 communities={communities}
+                posts={posts}
+                setFollowers={setFollowers}
               />
             </Col>
-            <Col sm={9}>
+            <Col sm={stillNotActive.length > 0 ? 9 : 12}>
               <h3 className="mb-3">Posts</h3>
 
               <UserPosts posts={posts} />

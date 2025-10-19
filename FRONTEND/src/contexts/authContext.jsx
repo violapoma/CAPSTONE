@@ -54,7 +54,6 @@ export function AuthProvider({ children }) {
   //saves loggedUser
   useEffect(() => {
     if (token) {
-      console.log("authContext token", token);
       fetchLoggedUser()
     }
   }, [token]);

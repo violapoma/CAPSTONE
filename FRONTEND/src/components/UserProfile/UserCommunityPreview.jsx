@@ -1,18 +1,34 @@
+import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import CommunityDetails from "../Modals/CommunityDetails";
 
 function UserCommunityPreview({ communities }) {
+  const [showCommDetails, setShowCommDetails] = useState(false); //join not active community modal
+  const [selectedId, setSelectedId] = useState(null);
+  //TODO: diable communitypage if community is not approved or not active
+  const handleOpen = ()=>{
+    setShowCommDetails(true);
+  }
+  const handleClose = ()=>{
+    setShowCommDetails(false); 
+    setSelectedId(null); 
+  }
+
+  const handleSelected = (commId)=>{
+    setSelectedId(commId); 
+    handleOpen();
+  }
+
   return (
     <>
       {communities.moderatorOf ? (
-        <Row>
+        <Row className="g-3">
           {communities.moderatorOf
             ?.filter((c) => !c.active)
             .map((c) => {
-              console.log("comm", c.cover, c.name, c.active);
               return (
-                <Link to={`/communities/${c._id}`}>
-                  <Col sm={12} key={c._id} className="fs-3">
+                  <Col sm={12} key={c._id} className="fs-3 cursorPointer " onClick={()=>handleSelected(c._id)}>
                     <img
                       src={c.cover}
                       alt="cover prw"
@@ -20,13 +36,13 @@ function UserCommunityPreview({ communities }) {
                     />
                     {c.name}
                   </Col>
-                </Link>
               );
             })}
         </Row>
       ) : (
         <p> No communities yet </p>
       )}
+      <CommunityDetails commId={selectedId} showCommDetails={showCommDetails} setShowCommDetails={setShowCommDetails} />
     </>
   );
 }

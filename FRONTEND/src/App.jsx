@@ -10,8 +10,11 @@ import { LoaderSignUpProvider } from "./contexts/loaderSignUpContext";
 import UserProfile from "./pages/UserProfile";
 import Header from "./components/Header";
 import BrowseCommunities from "./pages/BrowseCommunities";
-import CommunityPage from "./components/Communities/CommunityPage";
+import CommunityPage from "./pages/CommunityPage";
 import Footer from "./components/Footer";
+import PostDetails from "./pages/PostDetails";
+import AddPost from "./pages/AddPost";
+import CommunityMember from "./components/CommunityMember";
 
 function App() {
   return (
@@ -40,16 +43,31 @@ function App() {
               </Route>
               <Route element={<ProtectedRoutes />}>
                 <Route path="/" element={<UserProfile isMe={true} />} />
+                <Route path="/users/:userId" element={<UserProfile isMe={false} />} />
                 <Route path="/communities" element={<BrowseCommunities />} />
-                <Route
-                  path="/communities/:commId"
-                  element={<CommunityPage />}
-                />
+                <Route element={<CommunityMember />}>
+                  <Route
+                    path="/communities/:commId"
+                    element={<CommunityPage />}
+                  />
+                  <Route
+                    path="/communities/:commId/posts/:postId"
+                    element={<PostDetails />}
+                  />
+                  <Route
+                    path="/communities/:commId/posts/add-post"
+                    element={<AddPost />}
+                  />
+                  <Route
+                    path="/communities/:commId/posts/:postId/edit-post"
+                    element={<AddPost />}
+                  />
+                </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-          <Footer />
+          {/* <Footer /> */}
         </AuthProvider>
       </BrowserRouter>
     </div>

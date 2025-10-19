@@ -8,8 +8,31 @@ import User from "../models/User.js";
  */
 export async function createNotification(request, response) {
   // const { userId } = request.params;
-  const userId = request.loggedUser.id; 
+  const userId = request.loggedUser._id; 
   const payload = request.body;
+  let notif = {
+    from: payload.from,
+    category: payload.category,
+    sourceModel: payload.sourceModel,
+    read: false,
+  };
+  
+  switch(payload.category) {
+    case 'follow':
+    case 'unfollow':
+      break;
+    case 'like':
+    case 'dislike':
+    case 'comment':
+    case 'reply':
+      notif.source = payload.source; // postId or commentId
+      break;
+    case 'community':
+      notif.source = payload.source; // communityId
+      break;
+    default:
+      break;
+  }
   try {
     const user = await User.findById(userId);
     if (!user)
@@ -21,12 +44,12 @@ export async function createNotification(request, response) {
       return response.status(404).json({ message: `Sender ${payload.from} NOT FOUND` });
     }
 
-    user.notifications.unshift(payload);
+    user.notifications.unshift(notif);
     if (user.notifications.length > Number(process.env.MAX_NOTIFICATIONS))
       user.notifications.pop();
 
     await user.save();
-    return response.status(201).json({data: user.notifications });
+    return response.status(201).json(user.notifications);
   } catch (err) {
     return response.status(500).json({
       message: `Error adding a notification for user with id: ${userId}`,
@@ -44,7 +67,10 @@ export async function createNotification(request, response) {
 export async function getAllNotifications(request, response) {
   const userId = request.loggedUser.id; 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate([
+      { path: "notifications.from", select: "username profilePic" },
+      { path: "notifications.source" } 
+    ]);
     if (!user)
       return response.status(404).json({ message: `User ${userId} NOT FOUND` });
     return response

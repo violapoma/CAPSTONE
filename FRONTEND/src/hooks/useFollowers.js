@@ -23,5 +23,5 @@ export function useFollowers(userId) {
     fetchFollowers();
   }, [userId]);
 
-  return { followers, loadingFollowers, errorFollowers };
+  return { followers, setFollowers, loadingFollowers, errorFollowers };
 }

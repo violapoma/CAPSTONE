@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Form, Col, Button, Row } from "react-bootstrap";
 
-function CustomFileInput({ addPic }) {
+function CustomFileInput({ addPic, rounded}) {
   const fileRef = useRef(null);
   const [fileName, setFileName] = useState("");
 
@@ -45,7 +45,9 @@ function CustomFileInput({ addPic }) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={handleClick}
-        className={`rounded-circle dragAndDrop d-flex align-items-center justify-content-center text-secondary ${isDragging && "bg-dragging"}`}
+        className={`dragAndDrop d-flex align-items-center justify-content-center text-secondary ${
+          rounded ? "rounded-circle" : "w-100" 
+        } ${isDragging && "bg-dragging"}`}
       >
         {!fileName && "Drag & drop a file here or click to select"}
         {preview && (
@@ -53,7 +55,7 @@ function CustomFileInput({ addPic }) {
             <img
               src={preview}
               alt="Preview"
-              className="avatarPreview"
+              className={rounded ? "avatarPreview" : "coverPreview"} 
             />
           </div>
         )}

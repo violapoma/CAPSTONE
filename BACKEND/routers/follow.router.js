@@ -29,7 +29,7 @@ followRouter.get(
 );
 
 followRouter.get(
-  ":userId/following",
+  "/:userId/following",
   (request, response, next) => {
     request.type = "following";
     next();

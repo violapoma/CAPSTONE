@@ -65,7 +65,7 @@ communityRouter.patch(
   changeStatus
 );
 
-communityRouter.put('/:communityId', validate(communityIdValidator), checkExistingCommunityMw, updateCommunity);
+communityRouter.put('/:communityId', validate(communityIdValidator), checkExistingCommunityMw, updateCommunity); //TODO; METTI VALIDATOR PER I CAMPI MODIFICABILI66
 
 communityRouter.patch(
   "/:communityId/cover",

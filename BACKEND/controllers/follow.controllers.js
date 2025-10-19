@@ -1,3 +1,4 @@
+import { createNotification } from "../helpers/createNotification.js";
 import FollowConnection from "../models/FollowConnection.js";
 import User from "../models/User.js";
 
@@ -10,7 +11,7 @@ import User from "../models/User.js";
  */
 export async function followUser(request, response) {
   const { followingId } = request.params;
-  const userId = request.loggedUser.id; 
+  const userId = request.loggedUser._id; 
   if (userId == followingId)
     return response
       .status(400)
@@ -34,6 +35,11 @@ export async function followUser(request, response) {
       return response.status(400).json({message: `${userId} already follows ${followingId}`}); 
 
     const follow = new FollowConnection(connection);
+
+    await createNotification(followingId, {
+      from: userId,
+      category: "follow",
+    });
 
     await follow.save();
 
@@ -78,6 +84,11 @@ export async function unfollowUser(request, response){
       return response.status(400).json({message: `${userId} does not follow ${followingId} yet`}); 
 
     const unfollow = await FollowConnection.findOneAndDelete(connection);
+
+    await createNotification(followingId, {
+      from: userId,
+      category: "unfollow",
+    });
 
     response.status(201).json(unfollow);
   } catch (err) {

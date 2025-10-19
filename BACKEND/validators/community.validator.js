@@ -28,7 +28,7 @@ export const communityIdValidator = Joi.object({
 
 export const updateCommunityValidator = Joi.object({
   description: Joi.string().min(1).max(600).required(),
-  guidelines: Joi.string(),
+  guidelines: Joi.string().max(600).optional(),
   style: Joi.object({
     backgroundColor: Joi.string().pattern(exaPattern).default("#f7f3f2"),
     titleColor: Joi.string().pattern(exaPattern).default("#000000"),

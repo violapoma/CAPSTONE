@@ -1,6 +1,8 @@
-import { Container, Image, Nav, NavDropdown, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Container, Image, ListGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { Link, NavLink } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
+import SingleNotification from "./Helpers/SingleNotification";
+import NotificationPanel from "./NotificationPanel";
 //import Logo from "./Logo"; //TODO: logo component
 
 function Header() {
@@ -22,6 +24,13 @@ function Header() {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto">
+                <NavLink
+                  to={"/communities"}
+                  className="d-flex align-items-center"
+                >
+                  <i className="bi bi-layout-wtf fs-3 me-3" />
+                </NavLink>
+               <NotificationPanel />
                 <NavDropdown
                   title={
                     <Image
@@ -33,9 +42,7 @@ function Header() {
                   id="nav-avatar-dropdown"
                   align="end"
                 >
-                  <NavDropdown.Header>
-                    {loggedUser.username}
-                  </NavDropdown.Header>
+                  <NavDropdown.Header>{loggedUser.username}</NavDropdown.Header>
                   <NavDropdown.Item to="/" as={Link}>
                     View profile
                   </NavDropdown.Item>

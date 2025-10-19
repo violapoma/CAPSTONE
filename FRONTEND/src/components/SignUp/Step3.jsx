@@ -1,6 +1,6 @@
 import { Button, Col, Form } from "react-bootstrap";
 import { useSignUpProvider } from "../../contexts/signUpContext";
-import CustomFileInput from "../CustomFileInput";
+import CustomFileInput from "../Helpers/CustomFileInput";
 import { useRef } from "react";
 
 function Step3() {
@@ -34,7 +34,7 @@ function Step3() {
       </div>
       <Form.Group as={Col} sm="12" controlId="validationImage">
         <Form.Label>Profile picture</Form.Label>
-        <CustomFileInput addPic={addProfilePic} />
+        <CustomFileInput addPic={addProfilePic} rounded={true} />
       </Form.Group>
       <Button
         type="button"

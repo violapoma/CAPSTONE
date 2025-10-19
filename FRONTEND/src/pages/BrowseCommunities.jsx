@@ -12,7 +12,8 @@ function BrowseCommunities() {
   const [loading, setLoading] = useState(true);
   const [activeCommunities, setActiveCommunities] = useState([]);
   const [notActiveCommunities, setNotActiveCommunities] = useState([]);
-  const [myNotActiveCommunities, setMyNotActiveCommunities] = useState([]);
+  const [myNotActiveCommunitiesAsMember, setMyNotActiveCommunitiesAsMember] =
+    useState([]);
   const [userCommunities, setUserCommunities] = useState([]);
   const [joinableCommunities, setJoinableCommunities] = useState([]);
 
@@ -35,7 +36,7 @@ function BrowseCommunities() {
     setNotActiveCommunities((prev) =>
       prev.map((c) => (c._id === updatedComm._id ? updatedComm : c))
     );
-    setMyNotActiveCommunities((prev) =>
+    setMyNotActiveCommunitiesAsMember((prev) =>
       prev.map((c) => (c._id === updatedComm._id ? updatedComm : c))
     );
     setUserCommunities((prev) =>
@@ -52,7 +53,14 @@ function BrowseCommunities() {
       const res = await axiosInstance.get("/communities");
       console.log("communities:", res.data);
       const active = res.data.filter((comm) => comm.active === true);
-      const notActive = res.data.filter((comm) => !comm.active); //waitlist
+      const notActive = res.data.filter(
+        (comm) => comm.status === "approved" && !comm.active
+      ); //waitlist you can join
+
+      const joinableNotActive = notActive.filter(
+        (comm) => !comm.members.find((m) => m._id === loggedUser._id)
+      );
+
       const myNotActive = notActive.filter((comm) =>
         comm.members.find((m) => m._id === loggedUser._id)
       );
@@ -68,14 +76,15 @@ function BrowseCommunities() {
       console.log("loggedUser", loggedUser);
       console.log("Active:", active);
       console.log("Not Active:", notActive);
+      console.log("Joinable not Active:", joinableNotActive);
       console.log("My notactive", myNotActive);
       console.log("AlreadyMember:", alreadyMember);
       console.log("NotJoinedActive", notJoinedActive);
-      setActiveCommunities(active);
-      setNotActiveCommunities(notActive);
-      setUserCommunities(alreadyMember);
-      setJoinableCommunities(notJoinedActive);
-      setMyNotActiveCommunities(myNotActive);
+      setActiveCommunities(active); //HELPER!!!!
+      setNotActiveCommunities(joinableNotActive); //help build these communities
+      setUserCommunities(alreadyMember); //your communities
+      setJoinableCommunities(notJoinedActive); //browse other communities -> active
+      setMyNotActiveCommunitiesAsMember(myNotActive); //your waitlist (kh)
     } catch (err) {
       console.log("error fetching all communitites", err);
     } finally {
@@ -101,63 +110,64 @@ function BrowseCommunities() {
             <Nav.Item>
               <Nav.Link eventKey="other">Browse other communities</Nav.Link>
             </Nav.Item>
+            <Nav.Item className="hovering" >
             <Button
               variant="outline-secondaty"
               onClick={() => setShowCommProposal(true)}
             >
               Add community
             </Button>
+            </Nav.Item>
           </Nav>
 
           <Tab.Content className="mt-4">
             <Tab.Pane eventKey="member">
-              <ListGroup>
+              <Row className="g-3">
                 {userCommunities?.length > 0 ? (
                   userCommunities.map((comm) => (
-                    <Link to={`/communities/${comm._id}`} key={comm._id}>
-                      <Col sm={4}>
-                        <ListGroup.Item className="hovering ps-0">
-                          <CommunityPreview community={comm} />
-                        </ListGroup.Item>
-                      </Col>
-                    </Link>
+                    <Col sm={4} key={comm._id} className="hovering ps-0">
+                      <Link to={`/communities/${comm._id}`}>
+                        <CommunityPreview community={comm} />
+                      </Link>
+                    </Col>
                   ))
                 ) : (
                   <p> No communities yet </p>
                 )}
-              </ListGroup>
+              </Row>
             </Tab.Pane>
             <Tab.Pane eventKey="notActive">
-              <ListGroup>
-                {myNotActiveCommunities?.length > 0 ? (
-                  myNotActiveCommunities.map((comm) => (
-                    <Col sm={4} key={comm._id} onClick={handleCommDetails}>
-                      <ListGroup.Item className="hovering ps-0">
-                        <CommunityPreview community={comm} />
-                      </ListGroup.Item>
+              <Row className="g-3">
+                {myNotActiveCommunitiesAsMember?.length > 0 ? (
+                  myNotActiveCommunitiesAsMember.map((comm) => (
+                    <Col
+                      sm={4}
+                      key={comm._id}
+                      onClick={()=>handleCommDetails(comm._id)}
+                      className="hovering ps-0"
+                    >
+                      <CommunityPreview community={comm} />
                     </Col>
                   ))
                 ) : (
                   <p>You are not waiting for any community to become active.</p>
                 )}
-              </ListGroup>
+              </Row>
             </Tab.Pane>
             <Tab.Pane eventKey="other">
-              <ListGroup>
+              <Row>
                 {joinableCommunities?.length > 0 ? (
                   joinableCommunities.map((comm) => (
-                    <Link to={`/communities/${comm._id}`}>
-                      <Col sm={4} key={comm._id}>
-                        <ListGroup.Item className="hovering ps-0">
-                          <CommunityPreview community={comm} />
-                        </ListGroup.Item>
-                      </Col>
-                    </Link>
+                    <Col sm={4} key={comm._id} className="hovering ps-0">
+                      <Link to={`/communities/${comm._id}`}>
+                        <CommunityPreview community={comm} />
+                      </Link>
+                    </Col>
                   ))
                 ) : (
                   <p>No more communities to browse</p>
                 )}
-              </ListGroup>
+              </Row>
             </Tab.Pane>
           </Tab.Content>
         </Tab.Container>
@@ -165,23 +175,21 @@ function BrowseCommunities() {
 
       <Col sm={3}>
         <Col sm={12}>
-          <h3 className="text-end">
-            Help other users to build their communities!
-          </h3>
-          <Row>
+          <h3 className="text-end">Help build these communities!</h3>
+          <Row className="g-3">
             {notActiveCommunities?.length > 0 ? (
               notActiveCommunities.map((comm) => (
                 <Col
                   sm={12}
                   key={comm._id}
-                  className="cursorPointer"
+                  className="cursorPointer hovering"
                   onClick={() => handleCommDetails(comm._id)}
                 >
                   <CommunityPreview community={comm} />
                 </Col>
               ))
             ) : (
-              <p> No communities yet </p>
+              <p className="text-end text-lightGrey"> No communities yet </p>
             )}
           </Row>
         </Col>

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import DetailsModal from "./DetailsModal";
+import { useAuthContext } from "../../contexts/authContext";
+import axiosInstance from "../../../data/axios";
 
 function UserHeader({
   isMe,
@@ -9,12 +11,67 @@ function UserHeader({
   following = [],
   posts = [],
   communities = [],
+  setFollowers
 }) {
-  const totalCommunities =
-    (communities?.moderating?.length || 0) +
-    (communities?.memberOf?.length || 0);
 
+  const { loggedUser } = useAuthContext();
   const [showDetails, setShowDetails] = useState(false);
+  const [alreadyFollowing, setAlreadyFollowing] = useState(false);
+  
+  const [activeAsModerator, setActiveAsModerator] = useState([]);
+  const [activeAsMember, setActiveAsMember] = useState([]);
+  const [totalCommunities, setTotalCommunities] = useState(null);
+ 
+  useEffect(() => {
+    if (!loggedUser) return;
+    if (isMe) {
+      setAlreadyFollowing(true); 
+      return; 
+    } 
+    const already = followers.some((f) => 
+        f.follower?._id?.toString() === loggedUser._id?.toString()
+    );
+    setAlreadyFollowing(already);
+  }, [followers, loggedUser, isMe]);
+
+  useEffect(()=>{
+    // 1. Filtra i dati direttamente dalla prop 'communities'
+    const moderatingActive = communities.moderatorOf?.filter(c => c.active) || []; 
+    const memberActive = communities.memberOf?.filter(c=>c.active) || []; 
+
+    // 2. Aggiorna gli stati per la modale
+    setActiveAsModerator(moderatingActive); 
+    setActiveAsMember(memberActive); 
+    
+    // 3. Calcola e imposta il totale usando i nuovi array filtrati (che sono immediatamente disponibili qui)
+    const newTotal = moderatingActive.length + memberActive.length;
+    setTotalCommunities(newTotal); 
+    
+    // Dipendenza corretta: solo la prop 'communities'
+  },[communities] );
+
+  const handleFollowToggle = async () => {
+    if (!loggedUser) return;
+    const loggedUserIdString = loggedUser._id?.toString();
+
+    try {
+      if (alreadyFollowing) {
+        await axiosInstance.delete(`/follow-list/remove/${user._id}`); 
+        setFollowers(prev => prev.filter(f => 
+            f.follower?._id?.toString() !== loggedUserIdString
+        ));
+        setAlreadyFollowing(false);  
+      } else {
+        await axiosInstance.post(`/follow-list/add/${user._id}`);
+        const newFollowerObject = { follower: loggedUser, _id: 'temp_id_' + Date.now() }; 
+        setFollowers(prev => [...prev, newFollowerObject]); 
+        setAlreadyFollowing(true);
+      }
+    } catch (err) {
+      console.error("Follow/unfollow error:", err);
+    }
+  };
+
   return (
     <>
       <Row className="pb-4 border-bottom border-secondary">
@@ -30,11 +87,22 @@ function UserHeader({
             <Col sm={4} className="fw-bold fs-2">
               {user.username}
             </Col>
-            {isMe && (
+            {isMe ? (
               <Col sm={4}>
                 <Button variant="outline-secondary" className="button">
                   Edit
                 </Button>
+              </Col>
+            ) : (
+              <Col sm={4}>
+                <Col sm={4}>
+                  <Button
+                    variant='outline-secondary'
+                    onClick={handleFollowToggle}
+                  >
+                    {alreadyFollowing ? "Unfollow" : "Follow"}
+                  </Button>
+                </Col>
               </Col>
             )}
           </Row>
@@ -60,7 +128,14 @@ function UserHeader({
           </Row>
         </Col>
       </Row>
-      <DetailsModal followers={followers} following={following} communities={communities} showDetails={showDetails} setShowDetails={setShowDetails} />
+      <DetailsModal
+        followers={followers}
+        following={following}
+        activeAsModerator={activeAsModerator}
+        activeAsMember={activeAsMember}
+        showDetails={showDetails}
+        setShowDetails={setShowDetails}
+      />
     </>
   );
 }

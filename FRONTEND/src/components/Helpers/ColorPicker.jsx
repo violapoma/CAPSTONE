@@ -1,28 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HexColorPicker } from "react-colorful";
 
-function ColorPicker() {
-  const [colors, setColors] = useState({
-    backgroundColor: "#f7f3f2",
-    titleColor: "#000000",
-    secondaryColor: "#d5c9c9",
-  });
+function ColorPicker({ initialColors, onStyleChange }) {
+  const [colors, setColors] = useState(initialColors);
 
   const [activeField, setActiveField] = useState("backgroundColor");
 
+  useEffect(() => {
+    onStyleChange(colors);
+  }, [colors, onStyleChange]);
+
+  //hexColorPicker already handles valid formats, no regex needed
   const handleColorChange = (field, value) => {
-    if (/^#([0-9A-Fa-f]{0,6})$/.test(value)) {
-      setColors((prev) => ({ ...prev, [field]: value }));
-    }
+    setColors((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePickerChange = (newColor) => {
+    setColors((prev) => ({ ...prev, [activeField]: newColor }));
   };
   return (
     <div className="d-flex align-items-start" style={{ gap: "2rem" }}>
       {/* Picker */}
       <HexColorPicker
         color={colors[activeField]}
-        onChange={(newColor) =>
-          setColors((prev) => ({ ...prev, [activeField]: newColor }))
-        }
+        onChange={handlePickerChange}
       />
 
       {/* Box dei colori con nomi a lato */}
@@ -62,7 +63,7 @@ function ColorPicker() {
             />
             {/* Nome leggibile */}
             <div style={{ minWidth: "120px" }}>
-              <strong>{toReadableFormat(field)}</strong>
+             {toReadableFormat(field)}
             </div>
           </div>
         ))}
