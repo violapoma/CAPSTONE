@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axiosInstance from "../../data/axios";
 import CommunityHeader from "../components/Communities/CommunityHeader";
 import { useAuthContext } from "../contexts/authContext";
-import CommunityPostContainer from "../components/Communities/CommunitypostContainer";
+import CommunityPostContainer from "../components/Communities/CommunityPostContainer";
 import { Container } from "react-bootstrap";
 import MyLoader from "../components/Helpers/MyLoader";
 
