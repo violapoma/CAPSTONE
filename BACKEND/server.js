@@ -20,6 +20,8 @@ import commentRouter from "./routers/comment.router.js";
 import { checkUserInCommunityMw } from "./middlewares/checkUserInCommunityMw.js";
 import { userIdValidator } from "./validators/user.validator.js";
 import { checkExistingUserMw } from "./middlewares/checkExistingUserMw.js";
+import googleStrategy from "./config/passportConfig.js";
+import passport from "passport";
 
 
 const server = express();
@@ -28,6 +30,8 @@ const port = process.env.PORT;
 server.use(cors());
 server.use(morgan("tiny")); 
 server.use(express.json()); 
+
+passport.use(googleStrategy); 
 
 //routers
 server.use('/auth', authRouter);

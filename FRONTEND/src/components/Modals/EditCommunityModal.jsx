@@ -130,6 +130,7 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
                   maxLength={maxChars}
                   placeholder="Write something about your community"
                   value={formData.description}
+                  style={{ resize: "none" }} 
                   onChange={handleDescrChange}
                 />
                 <span className={`${descrLength > 580 ? "asterisk" : "text-secondary"}`}>

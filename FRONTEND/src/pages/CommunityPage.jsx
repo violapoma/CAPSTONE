@@ -66,7 +66,7 @@ function CommunityPage() {
           />
           
           {amIMember ? (
-            <CommunityPostContainer communityId={commId} />
+            <CommunityPostContainer communityId={commId} commStyle={community?.style}/>
           ) : (
             <p className="text-center mt-5">devi essere membro per vedere i contenuti</p>
           )}

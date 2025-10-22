@@ -15,6 +15,9 @@ import Footer from "./components/Footer";
 import PostDetails from "./pages/PostDetails";
 import AddPost from "./pages/AddPost";
 import CommunityMember from "./components/CommunityMember";
+import AvatarCreatorPage from "./pages/AvatarCreatorPage";
+import GoogleCallback from "./components/GoogleCallback";
+import FirstCommunity from "./components/Helpers/FirstCommunity";
 
 function App() {
   return (
@@ -40,10 +43,13 @@ function App() {
                     </SignUpProvider>
                   }
                 />
+                <Route path="/auth/google-callback" element={<GoogleCallback />} />
               </Route>
               <Route element={<ProtectedRoutes />}>
                 <Route path="/" element={<UserProfile isMe={true} />} />
+                <Route path="/avatar" element={<AvatarCreatorPage />} />
                 <Route path="/users/:userId" element={<UserProfile isMe={false} />} />
+                <Route path='/first-community' element={<FirstCommunity />} />
                 <Route path="/communities" element={<BrowseCommunities />} />
                 <Route element={<CommunityMember />}>
                   <Route

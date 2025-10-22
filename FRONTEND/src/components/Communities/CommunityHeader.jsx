@@ -4,6 +4,7 @@ import { communityCSSVars } from "../../utils/communityCssVars";
 import { Link } from "react-router-dom";
 import EditComminityModal from "../Modals/EditCommunityModal";
 import CommunityMembersModal from "../Modals/CommunityMembersModal";
+import axiosInstance from "../../../data/axios";
 
 function CommunityHeader({
   community,
@@ -15,17 +16,31 @@ function CommunityHeader({
   const [showEditModal, setShowEditModal] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
+  const [loadingJoin, setLoadingJoin] = useState(false); 
+
   const handleOpen = () => {
     setShowEditModal(true);
   };
+
+  const handleJoinCommunity = ()=>{
+    setLoadingJoin(true); 
+    try{
+      const path = `/communities/${community?._id}/${(amIMember || amIModerator) ? 'join' : 'leave'}`; 
+      console.log(path); 
+    }catch(err){
+      console.log(err); 
+    } finally{
+      setLoadingJoin(false); 
+    }
+  }
 
   //delay
   useEffect(() => {
     if (community) {
       const timer = setTimeout(() => {
         setIsReady(true);
-      }, 30);
-      return () => clearTimeout(timer);
+      }, 3000);
+      // return () => clearTimeout(timer);
     }
   }, [community]);
 
@@ -93,13 +108,14 @@ function CommunityHeader({
                   </Link>
                 )}
 
-                <Button variant="outline-secondary" className="rounded-2">
+                <Button variant="outline-secondary" className="rounded-2" onClick={handleJoinCommunity}>
                   {amIMember ? (
                     <i className="bi bi-dash-square me-2"></i>
                   ) : (
                     <i className="bi bi-plus-square me-2"></i>
                   )}
-                  {amIMember ? "Leave" : "Join"}
+                  {/* TODO: HELL BUTTON */}
+                  {isReady && amIMember ? "Leave" : "Join"} 
                 </Button>
 
                 {amIModerator && (

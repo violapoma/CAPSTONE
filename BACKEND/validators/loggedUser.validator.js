@@ -18,7 +18,9 @@ export const editUserValidator = Joi.object({
   username: Joi.string()
     .min(3)
     .pattern(/(?![_.])[A-Za-z0-9._]+(?<![_.])/),
-  bio: Joi.string().trim().max(300),
+  bio: Joi.string().trim().min(0).max(300).optional(),
+  avatarRPM: Joi.string().optional(),
+  usesAvatar: Joi.boolean(),
 });
 
 export const changeLoggedUserPassword = Joi.object({

@@ -3,7 +3,7 @@ import axiosInstance from "../../../data/axios";
 import CommunityPost from "./CommunityPost";
 import { Link } from "react-router-dom";
 
-function CommunityPostContainer({ communityId }) {
+function CommunityPostContainer({ communityId, commStyle }) {
   const [posts, setPosts] = useState([]);
   const bentoboxClasses = [
     "post-small",
@@ -30,7 +30,7 @@ function CommunityPostContainer({ communityId }) {
           const boxClass = bentoboxClasses[index % bentoboxClasses.length];
           return (
             <Link to={`/communities/${communityId}/posts/${post._id}`} key={post._id} className={`community-post-link ${boxClass}`}>
-              <CommunityPost post={post} />
+              <CommunityPost post={post} commStyle={commStyle}/>
             </Link>
           );
         })}

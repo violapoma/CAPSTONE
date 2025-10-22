@@ -6,10 +6,10 @@ function CommunityNewMember({community, isMember, isModerator}){
   return(
     <>
     <CommunityHeader community={community} amIMember={isMember} amIModerator={isModerator} />
-    <Button variant="outline-secondary">
+    {/* <Button variant="outline-secondary">
       <i className="bi bi-plus-square me-3" />
       Join
-    </Button>
+    </Button> */}
     </>
   )
 

@@ -94,7 +94,7 @@ function SingleComment({
         style={communityStyle ? { ...communityCSSVars(communityStyle) } : {}}      >
         <Col sm={1}>
           <Image
-            src={comment.author.profilePic}
+            src={comment.author.usesAvatar ? comment.author.avatarRPM : comment.author.profilePic}
             roundedCircle
             className="dropdownAvatar"
           />

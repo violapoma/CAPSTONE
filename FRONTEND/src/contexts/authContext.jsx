@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
   const [loggedUser, setLoggedUser] = useState(null);
   const navigate = useNavigate();
 
+  
   /**
    * @param {*} jwt user token
    * @param {*} fromRegister true if login is called during the register process
@@ -36,9 +37,7 @@ export function AuthProvider({ children }) {
   const fetchLoggedUser = async () => {
     if (!token) return;
     try {
-      const res = await axios.get(`/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(`/me`);
       setLoggedUser(res.data);
     } catch (err) {
       console.error("fetchLoggedUser error:", err);

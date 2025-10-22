@@ -129,6 +129,7 @@ svg:hover {
   object-fit: cover;
   background-color: white;
   border: 1px solid var(--emph-color);
+  background-color: var(--primary-color);
 }
 .dropdown-header {
   color: var(--primary-text-color);
@@ -228,6 +229,7 @@ svg:hover {
   height: 10em;
   object-fit: cover;
   border-radius: 50%;
+  background-color: var(--primary-color);
 }
 .min-vh50 {
   min-height: 50vh !important;
@@ -385,31 +387,29 @@ svg:hover {
 /* BENTO BOX */
 .community-posts-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /*4cols, same width*/
+  grid-template-columns: repeat(4, 1fr);
 
-  /* Altezza di base delle righe (la nostra 'unità' verticale) */
   grid-auto-rows: 15em;
 
-  /* Spaziatura tra gli elementi */
   gap: 1.5em;
   padding: 2em;
 }
 .community-post-link {
   display: block;
-  text-decoration: none; /* Rimuovi la sottolineatura tipica dei link */
-  color: inherit; /* Mantieni il colore del testo ereditato */
-  height: 100%; /* Importante: garantisce che il link riempia l'intera cella */
+  text-decoration: none;
+  color: inherit;
+  height: 100%; 
 }
 .community-post-item {
   background-color: var(--header-bg-color);
   border-radius: 8px;
   padding: 15px;
-  overflow: hidden; /* Importante per i contenuti dei post */
-  height: 100%; /* Deve riempire il Link/a genitore */
+  overflow: hidden; 
+  height: 100%; 
   width: 100%;
-  display: flex; /* Rendi il post-item un contenitore flex */
-  flex-direction: column; /* Per impilare il titolo, testo, e media verticalmente */
-  align-items: center; /* Centra il contenuto orizzontalmente */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
   text-align: center;
 }
 /* 
@@ -473,4 +473,44 @@ post-wide   3x1 span 3 (3 col)  span 1 (1 row)
   background-color: var(--secondary-color) !important;
   border-radius: 5px;
   padding: 0 2em;
+}
+
+.fixedSidebar {
+  position: sticky;
+  top: 0;
+  height: 85vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/*avatar*/
+iframe[src*="readyplayer.me"] {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  border: none !important;
+  border-radius: 0 !important;
+  clip-path: none !important;
+  overflow: visible !important;
+}
+
+#custom-switch{
+  background-color: var(--primary-color);
+  border: none;
+}
+.form-check-input:focus{
+  box-shadow: none;
+  color: white
+}
+
+#button-tooltip-danger .tooltip-inner{
+  background-color: RGBA(var(--bs-danger-rgb), var(--bs-bg-opacity, 1));
+  color: black;
+  font-weight: 500;
+}
+
+.pointerEvtsNone{
+  pointer-events: none;
 }

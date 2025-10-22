@@ -37,7 +37,7 @@ function CommunityMember() {
     checkIfMember();
   }, [commId, userId]);
 
-  //TODO: CHECK IF THIS WORKS
+  //TODO: CHECK IF THIS WORKS -> NO
   return (
     <>
       {isMember || isModerator ? (

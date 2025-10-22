@@ -173,14 +173,14 @@ function BrowseCommunities() {
         </Tab.Container>
       </Col>
 
-      <Col sm={3}>
+      <Col sm={3} className="fixedSidebar" >
         <Col sm={12}>
           <h3 className="text-end">Help build these communities!</h3>
-          <Row className="g-3">
+          <Row className="g-3 justify-content-center">
             {notActiveCommunities?.length > 0 ? (
               notActiveCommunities.map((comm) => (
                 <Col
-                  sm={12}
+                  sm={11}
                   key={comm._id}
                   className="cursorPointer hovering"
                   onClick={() => handleCommDetails(comm._id)}

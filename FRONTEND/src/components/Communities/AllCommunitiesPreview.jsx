@@ -63,13 +63,6 @@ function AllCommunitiesPreview({ fromRegister }) {
 
   return (
     <>
-      {showErrorModal && (
-        <ErrorModal
-          consoleMsg={consoleMsg}
-          show={showErrorModal}
-          setShow={setShowErrorModal}
-        />
-      )}
      <h3 className="text-center">Choose your first community </h3>
       <Row className="my-5">
         {communities.map((comm) => (
@@ -82,6 +75,13 @@ function AllCommunitiesPreview({ fromRegister }) {
           </Col>
         ))}
       </Row>
+      {showErrorModal && (
+        <ErrorModal
+          consoleMsg={consoleMsg}
+          show={showErrorModal}
+          setShow={setShowErrorModal}
+        />
+      )}
     </>
   );
 }

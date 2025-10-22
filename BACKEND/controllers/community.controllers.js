@@ -190,30 +190,30 @@ export async function joinCommunity(request, response) {
       });
     community.members.push(userId);
     if (community.members.length > MIN_MEMBERS) community.active = true;
-    //TODO: send mail to member
-    const html = `
-      <h1>Hi, ${
-        request.loggedUser.username
-      }, <b>WELCOME TO ${community.name.toUpperCase()}</b></h1>
-      <h2>Our guidelines</h2>
-      <p>Please, remember to post only appropriate content.
-      ${
-        community.guidelines &&
-        "Make sure you follow our guidelines. The community moderator is allowed to remove you or your content they deem it necessary.<br>" +
-          guidelines
-      }
-      That being said, we hope to have a nice time together 🥰</p>
-      <p>→<a href='${process.env.FRONTEND_HOST}/communities/${
-      community._id
-    }'>CLICK HERE</a>← to visit ${community.name}</p>
-    `;
 
-    const infoMail = await mailer.sendMail({
-      to: request.loggedUser.email,
-      subject: `Thanks for joining ${community.name}!`,
-      html: html,
-      from: "violapoma@gmail.com",
-    });
+    // const html = `
+    //   <h1>Hi, ${
+    //     request.loggedUser.username
+    //   }, <b>WELCOME TO ${community.name.toUpperCase()}</b></h1>
+    //   <h2>Our guidelines</h2>
+    //   <p>Please, remember to post only appropriate content.
+    //   ${
+    //     community.guidelines &&
+    //     "Make sure you follow our guidelines. The community moderator is allowed to remove you or your content they deem it necessary.<br>" +
+    //       guidelines
+    //   }
+    //   That being said, we hope to have a nice time together 🥰</p>
+    //   <p>→<a href='${process.env.FRONTEND_HOST}/communities/${
+    //   community._id
+    // }'>CLICK HERE</a>← to visit ${community.name}</p>
+    // `;
+
+    // const infoMail = await mailer.sendMail({
+    //   to: request.loggedUser.email,
+    //   subject: `Thanks for joining ${community.name}!`,
+    //   html: html,
+    //   from: "violapoma@gmail.com",
+    // });
 
     await community.save();
     return response.status(200).json(community);

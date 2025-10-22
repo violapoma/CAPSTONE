@@ -26,6 +26,7 @@ async function authMW(request, response, next) {
   }
     request.adminId = admin ? admin._id : null;
     request.loggedUser = user; //adding loggedUser field in request obj
+    request.loggedUser.jwt = token;
     next();
   } catch (err) {
     console.error("Authentication middleware error:", err.message);

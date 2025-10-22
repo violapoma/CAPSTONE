@@ -3,6 +3,7 @@ import { Button, Col, Row } from "react-bootstrap";
 import DetailsModal from "./DetailsModal";
 import { useAuthContext } from "../../contexts/authContext";
 import axiosInstance from "../../../data/axios";
+import EditUserModal from "../Modals/EditUserModal";
 
 function UserHeader({
   isMe,
@@ -11,44 +12,47 @@ function UserHeader({
   following = [],
   posts = [],
   communities = [],
-  setFollowers
+  setFollowers,
+  setRefreshTrigger
 }) {
-
   const { loggedUser } = useAuthContext();
   const [showDetails, setShowDetails] = useState(false);
+  const [showEditUserModal, setShowEditUserModal] = useState(false);
+
   const [alreadyFollowing, setAlreadyFollowing] = useState(false);
-  
+
   const [activeAsModerator, setActiveAsModerator] = useState([]);
   const [activeAsMember, setActiveAsMember] = useState([]);
   const [totalCommunities, setTotalCommunities] = useState(null);
- 
+
   useEffect(() => {
     if (!loggedUser) return;
     if (isMe) {
-      setAlreadyFollowing(true); 
-      return; 
-    } 
-    const already = followers.some((f) => 
-        f.follower?._id?.toString() === loggedUser._id?.toString()
+      setAlreadyFollowing(true);
+      return;
+    }
+    const already = followers.some(
+      (f) => f.follower?._id?.toString() === loggedUser._id?.toString()
     );
     setAlreadyFollowing(already);
   }, [followers, loggedUser, isMe]);
 
-  useEffect(()=>{
+  useEffect(() => {
     // 1. Filtra i dati direttamente dalla prop 'communities'
-    const moderatingActive = communities.moderatorOf?.filter(c => c.active) || []; 
-    const memberActive = communities.memberOf?.filter(c=>c.active) || []; 
+    const moderatingActive =
+      communities.moderatorOf?.filter((c) => c.active) || [];
+    const memberActive = communities.memberOf?.filter((c) => c.active) || [];
 
     // 2. Aggiorna gli stati per la modale
-    setActiveAsModerator(moderatingActive); 
-    setActiveAsMember(memberActive); 
-    
+    setActiveAsModerator(moderatingActive);
+    setActiveAsMember(memberActive);
+
     // 3. Calcola e imposta il totale usando i nuovi array filtrati (che sono immediatamente disponibili qui)
     const newTotal = moderatingActive.length + memberActive.length;
-    setTotalCommunities(newTotal); 
-    
+    setTotalCommunities(newTotal);
+
     // Dipendenza corretta: solo la prop 'communities'
-  },[communities] );
+  }, [communities]);
 
   const handleFollowToggle = async () => {
     if (!loggedUser) return;
@@ -56,15 +60,18 @@ function UserHeader({
 
     try {
       if (alreadyFollowing) {
-        await axiosInstance.delete(`/follow-list/remove/${user._id}`); 
-        setFollowers(prev => prev.filter(f => 
-            f.follower?._id?.toString() !== loggedUserIdString
-        ));
-        setAlreadyFollowing(false);  
+        await axiosInstance.delete(`/follow-list/remove/${user._id}`);
+        setFollowers((prev) =>
+          prev.filter((f) => f.follower?._id?.toString() !== loggedUserIdString)
+        );
+        setAlreadyFollowing(false);
       } else {
         await axiosInstance.post(`/follow-list/add/${user._id}`);
-        const newFollowerObject = { follower: loggedUser, _id: 'temp_id_' + Date.now() }; 
-        setFollowers(prev => [...prev, newFollowerObject]); 
+        const newFollowerObject = {
+          follower: loggedUser,
+          _id: "temp_id_" + Date.now(),
+        };
+        setFollowers((prev) => [...prev, newFollowerObject]);
         setAlreadyFollowing(true);
       }
     } catch (err) {
@@ -77,9 +84,9 @@ function UserHeader({
       <Row className="pb-4 border-bottom border-secondary">
         <Col sm={3} className="">
           <img
-            src={user.profilePic}
+            src={user.usesAvatar ? user.avatarRPM : user.profilePic}
             alt="profile picture"
-            className="profileImg"
+            className="profileImg "
           />
         </Col>
         <Col sm={9} className="">
@@ -89,7 +96,7 @@ function UserHeader({
             </Col>
             {isMe ? (
               <Col sm={4}>
-                <Button variant="outline-secondary" className="button">
+                <Button variant="outline-secondary" className="button" onClick={()=>setShowEditUserModal(true)}>
                   Edit
                 </Button>
               </Col>
@@ -97,7 +104,7 @@ function UserHeader({
               <Col sm={4}>
                 <Col sm={4}>
                   <Button
-                    variant='outline-secondary'
+                    variant="outline-secondary"
                     onClick={handleFollowToggle}
                   >
                     {alreadyFollowing ? "Unfollow" : "Follow"}
@@ -126,6 +133,11 @@ function UserHeader({
               <span className="fw-bold ms-1">following</span>
             </Col>
           </Row>
+          <Row>
+            <Col sm={12}>
+              {loggedUser && user.bio}
+            </Col>
+          </Row>
         </Col>
       </Row>
       <DetailsModal
@@ -135,6 +147,12 @@ function UserHeader({
         activeAsMember={activeAsMember}
         showDetails={showDetails}
         setShowDetails={setShowDetails}
+      />
+      <EditUserModal
+        showEditUserModal={showEditUserModal}
+        setShowEditUserModal={setShowEditUserModal}
+        user={loggedUser}
+        setRefreshTrigger={setRefreshTrigger}
       />
     </>
   );

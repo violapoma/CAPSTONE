@@ -1,4 +1,11 @@
-import { Container, Image, ListGroup, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import {
+  Container,
+  Image,
+  ListGroup,
+  Nav,
+  NavDropdown,
+  Navbar,
+} from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
 import SingleNotification from "./Helpers/SingleNotification";
@@ -17,24 +24,32 @@ function Header() {
           className="py-0 me-2 d-flex align-items-center"
         >
           {/* <Logo />  TODO: LOGO HERE*/}
-          CHITCHAT
+          <Image
+            src="/imgs/chitchat-logo.png"
+            style={{ width: "4em" }}
+            className="me-2"
+          />
+          <h1 className="fs-3"> CHITCHAT</h1>
         </Navbar.Brand>
         {token && loggedUser && (
           <>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto">
+                <NavLink to={"/avatar"} className="d-flex align-items-center">
+                  <i className="bi bi-controller fs-3 me-3" />
+                </NavLink>
                 <NavLink
                   to={"/communities"}
                   className="d-flex align-items-center"
                 >
                   <i className="bi bi-layout-wtf fs-3 me-3" />
                 </NavLink>
-               <NotificationPanel />
+                <NotificationPanel />
                 <NavDropdown
                   title={
                     <Image
-                      src={loggedUser.profilePic}
+                      src={loggedUser.usesAvatar ? loggedUser.avatarRPM : loggedUser.profilePic}
                       roundedCircle
                       className="dropdownAvatar"
                     />

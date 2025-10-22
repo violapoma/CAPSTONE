@@ -29,13 +29,13 @@ export async function register(request, response) {
     <p>And please remember to always respect other users</p>
     <p>→<a href='${process.env.FRONTEND_HOST}/users/${newUser._id}'>CLICK HERE</a>← to visit your profile</p>
   `;
-  
-  const infoMail = await mailer.sendMail({
-    to: newUser.email, 
-    subject: `Thanks for joining us!`,
-    html: html,
-    from: "violapoma@gmail.com", 
-  });
+
+    const infoMail = await mailer.sendMail({
+      to: newUser.email,
+      subject: `Thanks for joining us!`,
+      html: html,
+      from: "violapoma@gmail.com",
+    });
 
     return response.status(201).json({ user: newUser, jwt: token });
   } catch (err) {
@@ -53,7 +53,7 @@ export async function login(request, response) {
     const fetchedUser = await User.findOne({ email }).select("+password");
 
     if (!fetchedUser || !(await fetchedUser.comparePassword(password))) {
-      return response.status(400).json({ message: 'wrong credentials' });
+      return response.status(400).json({ message: "wrong credentials" });
     }
     const jwt = signJWT({ id: fetchedUser._id });
     return response
@@ -66,27 +66,38 @@ export async function login(request, response) {
   }
 }
 
-export async function redirectToMe(request, response, next) {
-  response.redirect(`${process.env.FRONTEND_HOST}/auth/google-callback?jwt=${request.loggedUser.jwt}`); //messo da me in request.user.jwt
+export async function redirectToMe(req, res) {
+  const { jwt, isNewUser } = req.user;
+  const query = new URLSearchParams({ jwt, isNewUser }).toString();
+  console.log('*********queryNewUser', query);
+  res.redirect(`${process.env.FRONTEND_HOST}/auth/google-callback?${query}`);
 }
 
-export async function checkTakenEmailUsername(request, response){
-  const {email, username} = request.query;
-  if(!email || !username)
-    return response.status(400).json({message: 'Invalid request, missing fields', exists: null});
-  try{
+
+export async function checkTakenEmailUsername(request, response) {
+  const { email, username } = request.query;
+  if (!email || !username)
+    return response
+      .status(400)
+      .json({ message: "Invalid request, missing fields", exists: null });
+  try {
     const existing = await User.findOne({
-      $or: [
-        email ? { email } : null,
-        username ? { username } : null,
-      ].filter(Boolean),
+      $or: [email ? { email } : null, username ? { username } : null].filter(
+        Boolean
+      ),
     });
-    if (existing) 
-      return response.status(409).json({message: 'Email or username already in use', exists: true}); 
-    return response.status(200).json({exists: false}); 
-  }catch (err) {
+    if (existing)
+      return response
+        .status(409)
+        .json({ message: "Email or username already in use", exists: true });
+    return response.status(200).json({ exists: false });
+  } catch (err) {
     response
       .status(500)
-      .json({ message: "error during check email and username", error: err.message, exists: null});
-  } 
+      .json({
+        message: "error during check email and username",
+        error: err.message,
+        exists: null,
+      });
+  }
 }

@@ -1,28 +1,24 @@
-function CommunityPost({ post }) {
-  function decodeHtmlEntities(encodedStr) {
-    const parser = new DOMParser();
-    const dom = parser.parseFromString(encodedStr, "text/html");
-    return dom.documentElement.textContent;
-  }
+import { communityCSSVars } from "../../utils/communityCssVars";
 
+function CommunityPost({ post, commStyle }) {
   function getTextPreview(html, maxLength = 200) {
-  // Decodifica se serve
-  const decoded = decodeHtmlEntities(html);
+    const decoded = decodeHtmlEntities(html);
 
-  // Crea un elemento temporaneo e ottieni il testo visibile
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = decoded;
-  const text = tempDiv.textContent || tempDiv.innerText || "";
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = decoded;
+    const text = tempDiv.textContent || tempDiv.innerText || "";
 
-  // Rimuove spazi multipli e tronca
-  const cleanText = text.replace(/\s+/g, " ").trim();
+    const cleanText = text.replace(/\s+/g, " ").trim();
 
-  return cleanText.length > maxLength
-    ? cleanText.slice(0, maxLength) + "..."
-    : cleanText;
-}
+    return cleanText.length > maxLength
+      ? cleanText.slice(0, maxLength) + "..."
+      : cleanText;
+  }
   return (
-    <div className={`community-post-item `}>
+    <div
+      className={`community-post-item hovering shadow-lg community-banner`}
+      style={commStyle ? {...communityCSSVars(commStyle) } : {}}
+    >
       <h3>{post.title}</h3>
       <p>{getTextPreview(post.content)}</p>
       {post.cover && (
@@ -35,3 +31,9 @@ function CommunityPost({ post }) {
 }
 
 export default CommunityPost;
+
+function decodeHtmlEntities(encodedStr) {
+  const parser = new DOMParser();
+  const dom = parser.parseFromString(encodedStr, "text/html");
+  return dom.documentElement.textContent;
+}

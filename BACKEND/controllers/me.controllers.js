@@ -85,7 +85,7 @@ export async function changePassword(request, response) {
  * @returns success or error message
  */
 export async function changeProfilePic(request, response) {
-  const id = request.loggedUser;
+  const id = request.loggedUser._id;
   const imgPath = request.file?.path;
   if (!imgPath)
     return response
@@ -108,6 +108,49 @@ export async function changeProfilePic(request, response) {
     return response.status(500).json({
       message:
         "Something went wrong while tryng to update loggedUser profile pic",
+      error: err.message,
+    });
+  }
+}
+
+/**
+ * saves the png string from ReadyPlayerMe
+ * @param {*} request 
+ * @param {*} response 
+ */
+export async function updateAvatar(request, response){
+  const id = request.loggedUser._id; 
+  const {avatarURL} = request.body; 
+  if(!avatarURL)
+    return response.status(400).json({message: "URL not found", error: err.message}); 
+  try{
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      {avatarRPM: avatarURL},
+      {new: true}
+    );
+
+    return response.status(200).json(updatedUser); 
+  } catch(err){
+    return response.status(500).json({
+      message:
+        "Something went wrong while tryng to update loggedUser avatarRPM",
+      error: err.message,
+    });
+  }
+}
+
+export async function updadateUsesAvatar(request, response){
+  const id = request.loggedUser._id;
+  const {usesAvatar} = request.body; 
+  try{
+    const updatedUser = await User.findByIdAndUpdate(id, {usesAvatar}, {new: true}); 
+
+    return response.status(200).json(updatedUser);
+  } catch(err){
+    return response.status(500).json({
+      message:
+        "Something went wrong while tryng to update loggedUser usesAvatar",
       error: err.message,
     });
   }
