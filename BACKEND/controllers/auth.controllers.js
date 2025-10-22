@@ -5,11 +5,7 @@ import User from "../models/User.js";
 export async function register(request, response) {
   const payload = request.body;
 
-  try {
-    const existing = await User.findOne({ email: payload.email });
-    if (existing)
-      return response.status(409).json({ message: "user already existing" });
-
+  try { //if existing mongo already cahtches E11000
     const newUser = new User(payload);
 
     await newUser.save();
