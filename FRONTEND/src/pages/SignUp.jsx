@@ -39,8 +39,6 @@ function SignUp() {
     setSignUpLoader(true);
     try {
       await createUser();
-      //TODO: MIGLIORA
-      alert("Registrazione completata!");
     } catch (err) {
       setConsoleMsg("Error during account creation");
       setShowErrorModal(true);
