@@ -48,21 +48,21 @@ UserSchema.pre("save", async function (next) {
       this.password = await bcrypt.hash(this.password, salt);
     }
 
-    if (!this.username) {
-      let baseUsername = this.firstName
-        ? this.firstName.toLowerCase().replace(/\s+/g, "")
-        : "user";
+    // if (!this.username) {
+    //   let baseUsername = this.firstName
+    //     ? this.firstName.toLowerCase().replace(/\s+/g, "")
+    //     : "user";
 
-      let candidate = `${baseUsername}${Math.floor(Math.random() * 10000)}`;
-      let existingUser = await mongoose.models.User.findOne({ username: candidate });
+    //   let candidate = `${baseUsername}${Math.floor(Math.random() * 10000)}`;
+    //   let existingUser = await mongoose.models.User.findOne({ username: candidate });
 
-      while (existingUser) {
-        candidate = `${baseUsername}${Math.floor(Math.random() * 10000)}`;
-        existingUser = await mongoose.models.User.findOne({ username: candidate });
-      }
+    //   while (existingUser) {
+    //     candidate = `${baseUsername}${Math.floor(Math.random() * 10000)}`;
+    //     existingUser = await mongoose.models.User.findOne({ username: candidate });
+    //   }
 
-      this.username = candidate;
-    }
+    //   this.username = candidate;
+    // }
 
     next();
   } catch (err) {
