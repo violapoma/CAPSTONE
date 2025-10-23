@@ -13,6 +13,8 @@ import UserPosts from "../components/UserProfile/UserPosts";
 import UserCommunityPreview from "../components/UserProfile/UserCommunityPreview";
 
 function UserProfile({ isMe }) {
+
+  console.log('in userprofile');
   const { userId } = useParams();
   const { token, loggedUser, login } = useAuthContext();
 

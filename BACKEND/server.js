@@ -27,7 +27,13 @@ import passport from "passport";
 const server = express();
 const port = process.env.PORT;
 
-server.use(cors());
+const corsOptions = {
+  origin: import.meta.env.FRONTEND_HOST,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+};
+
+server.use(cors(corsOptions));
 server.use(morgan("tiny")); 
 server.use(express.json()); 
 

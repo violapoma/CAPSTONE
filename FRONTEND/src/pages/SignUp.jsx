@@ -63,7 +63,7 @@ function SignUp() {
                 Sign up - step {currentStep}/{STEP_NUMBER}
               </h3>
               <Form noValidate onSubmit={handleSubmit}>
-                <Row className="mb-3 w-50 mx-auto gy-4 align-items-center">
+                <Row className="mb-3 signUpRow mx-auto gy-4 align-items-center">
                   <StepRenderer />
 
                   <div className="d-flex justify-content-between mt-3">

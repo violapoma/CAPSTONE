@@ -64,14 +64,15 @@ function AllCommunitiesPreview({ fromRegister }) {
   return (
     <>
      <h3 className="text-center">Choose your first community </h3>
-      <Row className="my-5">
+      <Row className="my-5 scrollModdal">
         {communities.map((comm) => (
           <Col
-            sm={6}
+            xs={12}
+            md={6}
             className="hovering"
             onClick={() => setChosenCommunity(comm._id)}
           >
-            <CommunityPreview key={comm._id} community={comm} />
+            <CommunityPreview key={comm._id} community={comm} chosenCommunity={chosenCommunity}/>
           </Col>
         ))}
       </Row>

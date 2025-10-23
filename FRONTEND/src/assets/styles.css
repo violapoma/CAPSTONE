@@ -514,3 +514,21 @@ iframe[src*="readyplayer.me"] {
 .pointerEvtsNone{
   pointer-events: none;
 }
+.selected{
+  transform: scale(1.1);
+}
+
+.loginContainer, .signUpRow {
+  width: 100%;
+}
+
+
+@media (min-width: 992px) { /* lg  */
+  .loginContainer {
+    width: 25%;
+  }
+  .signUpRow {
+    width: 50%;
+  }
+}
+

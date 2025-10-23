@@ -5,6 +5,7 @@ import {
   Nav,
   NavDropdown,
   Navbar,
+  Row,
 } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
@@ -35,27 +36,21 @@ function Header() {
           <>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="ms-auto">
-                <NavLink to={"/avatar"} className="d-flex align-items-center">
-                  <i className="bi bi-controller fs-3 me-3" />
-                </NavLink>
-                <NavLink
-                  to={"/communities"}
-                  className="d-flex align-items-center"
-                >
-                  <i className="bi bi-layout-wtf fs-3 me-3" />
-                </NavLink>
-                <NotificationPanel />
+              <Nav className="ms-auto d-flex">
                 <NavDropdown
                   title={
                     <Image
-                      src={loggedUser.usesAvatar ? loggedUser.avatarRPM : loggedUser.profilePic}
+                      src={
+                        loggedUser.usesAvatar
+                          ? loggedUser.avatarRPM
+                          : loggedUser.profilePic
+                      }
                       roundedCircle
                       className="dropdownAvatar"
                     />
                   }
                   id="nav-avatar-dropdown"
-                  align="end"
+                  className="w-50"
                 >
                   <NavDropdown.Header>{loggedUser.username}</NavDropdown.Header>
                   <NavDropdown.Item to="/" as={Link}>
@@ -64,14 +59,23 @@ function Header() {
                   <NavDropdown.Item to="/communities" as={Link}>
                     Browse communities
                   </NavDropdown.Item>
-                  <NavDropdown.Item to="#" as={Link}>
-                    Propose a new community
-                  </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item to="/" as={Link} onClick={logout}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
+                <div className="w-50 d-flex justify-content-end">
+                  <NavLink to={"/avatar"} className="d-flex align-items-center">
+                    <i className="bi bi-controller fs-3 me-3" />
+                  </NavLink>
+                  <NavLink
+                    to={"/communities"}
+                    className="d-flex align-items-center"
+                  >
+                    <i className="bi bi-layout-wtf fs-3 me-3" />
+                  </NavLink>
+                  <NotificationPanel />
+                </div>
               </Nav>
             </Navbar.Collapse>
           </>

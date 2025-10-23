@@ -1,10 +1,10 @@
 import { Badge, Card, Col } from "react-bootstrap";
 
-function CommunityPreview({community}){
+function CommunityPreview({community, chosenCommunity}){
 
   return(
     
-      <Card className="shadow-sm" style={{backgroundColor: community.style.backgroundColor}}>
+      <Card className={`shadow-sm ${community._id === chosenCommunity ? 'selected shadow-lg' : ''}`} style={{backgroundColor: community.style.backgroundColor}}>
       <Card.Img variant="top" src={community.cover} style={{ height: '10em', objectFit: 'cover' }} />
       <Card.Body>
         <Card.Title style={{color: community.style.titleColor}}>{community.name}</Card.Title>
