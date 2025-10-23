@@ -27,6 +27,7 @@ import passport from "passport";
 const server = express();
 const port = process.env.PORT;
 
+console.log('CORS ORIGIN: ', process.env.FRONTEND_HOST); 
 const corsOptions = {
   origin: process.env.FRONTEND_HOST,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
