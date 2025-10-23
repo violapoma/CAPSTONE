@@ -28,7 +28,7 @@ const server = express();
 const port = process.env.PORT;
 
 const corsOptions = {
-  origin: import.meta.env.FRONTEND_HOST,
+  origin: process.env.FRONTEND_HOST,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
 };
