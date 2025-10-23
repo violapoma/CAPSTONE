@@ -18,7 +18,7 @@ function Header() {
 
   return (
     <Navbar expand="lg" className="navbarStyle">
-      <Container className="d-flex align-items-center">
+      <Container className="d-flex align-items-center justify-content-between">
         <Navbar.Brand
           as={Link}
           to="/"
@@ -34,50 +34,55 @@ function Header() {
         </Navbar.Brand>
         {token && loggedUser && (
           <>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="ms-auto d-flex">
-                <NavDropdown
-                  title={
-                    <Image
-                      src={
-                        loggedUser.usesAvatar
-                          ? loggedUser.avatarRPM
-                          : loggedUser.profilePic
-                      }
-                      roundedCircle
-                      className="dropdownAvatar"
-                    />
-                  }
-                  id="nav-avatar-dropdown"
-                  className="w-50"
+            <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center me-3">
+                <NavLink to={"/avatar"} className="d-flex align-items-center">
+                  <i className="bi bi-controller fs-3 me-3" />
+                </NavLink>
+                <NavLink
+                  to={"/communities"}
+                  className="d-flex align-items-center"
                 >
-                  <NavDropdown.Header>{loggedUser.username}</NavDropdown.Header>
-                  <NavDropdown.Item to="/" as={Link}>
-                    View profile
-                  </NavDropdown.Item>
-                  <NavDropdown.Item to="/communities" as={Link}>
-                    Browse communities
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item to="/" as={Link} onClick={logout}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
-                <div className="w-50 d-flex justify-content-end">
-                  <NavLink to={"/avatar"} className="d-flex align-items-center">
-                    <i className="bi bi-controller fs-3 me-3" />
-                  </NavLink>
-                  <NavLink
-                    to={"/communities"}
-                    className="d-flex align-items-center"
+                  <i className="bi bi-layout-wtf fs-3 me-3" />
+                </NavLink>
+                <NotificationPanel />
+              </div>
+
+              {/* <Navbar.Toggle aria-controls="basic-navbar-nav" />
+              <Navbar.Collapse id="basic-navbar-nav"> */}
+                <Nav className="ms-auto d-flex">
+                  <NavDropdown
+                    title={
+                      <Image
+                        src={
+                          loggedUser.usesAvatar
+                            ? loggedUser.avatarRPM
+                            : loggedUser.profilePic
+                        }
+                        roundedCircle
+                        className="dropdownAvatar"
+                      />
+                    }
+                    id="nav-avatar-dropdown"
+                    className="w-50"
                   >
-                    <i className="bi bi-layout-wtf fs-3 me-3" />
-                  </NavLink>
-                  <NotificationPanel />
-                </div>
-              </Nav>
-            </Navbar.Collapse>
+                    <NavDropdown.Header>
+                      {loggedUser.username}
+                    </NavDropdown.Header>
+                    <NavDropdown.Item to="/" as={Link}>
+                      View profile
+                    </NavDropdown.Item>
+                    <NavDropdown.Item to="/communities" as={Link}>
+                      Browse communities
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item to="/" as={Link} onClick={logout}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </Nav>
+              {/* </Navbar.Collapse> */}
+            </div>
           </>
         )}
       </Container>
