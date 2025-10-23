@@ -26,7 +26,7 @@ export async function register(request, response) {
     <p>→<a href='${process.env.FRONTEND_HOST}/users/${newUser._id}'>CLICK HERE</a>← to visit your profile</p>
   `;
 
-    const infoMail = mailer.sendMail({ //no await
+    const infoMail = mailer.sendMail({ //no await -> fire and forget pattern
       to: newUser.email,
       subject: `Thanks for joining us!`,
       html: html,
