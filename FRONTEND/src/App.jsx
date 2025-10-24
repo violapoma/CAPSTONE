@@ -58,16 +58,6 @@ function App() {
                 <Route path="/first-community" element={<FirstCommunity />} />
                 <Route path="/communities" element={<BrowseCommunities />} />
                 <Route element={<CommunityMember />}>
-                  {/* <Route
-                    path="/communities/:commId"
-                    element={<CommunityPage />}
-                  /> */}
-                  {/* new */}
-                  {/* <Route 
-                    path="/communities/:commId"
-                    element={null}
-                  /> */}
-                  {/* new new */}
                   <Route
                     path="/communities/:commId"
                     element={<CommunityPage />}
@@ -89,7 +79,6 @@ function App() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
-          {/* <Footer /> */}
         </AuthProvider>
       </BrowserRouter>
     </div>
