@@ -11,6 +11,8 @@ function CommunityHeader({
   amIMember,
   amIModerator,
   onUpdateCommunity,
+  onSetIsMember,
+  showFullImage
 }) {
   const [showMembers, setShowMembers] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -18,15 +20,20 @@ function CommunityHeader({
 
   const [loadingJoin, setLoadingJoin] = useState(false); 
 
+  const imageHeightClass = showFullImage ? "h-400" : "h-100px";
+
   const handleOpen = () => {
     setShowEditModal(true);
   };
 
-  const handleJoinCommunity = ()=>{
+  const handleJoinCommunity = async()=>{
     setLoadingJoin(true); 
+    const isJoining = !amIMember && !amIModerator; 
     try{
-      const path = `/communities/${community?._id}/${(amIMember || amIModerator) ? 'join' : 'leave'}`; 
+      const path = `/communities/${community?._id}/${isJoining ? 'join' : 'leave'}`; 
       console.log(path); 
+      const res = await axiosInstance.patch(path);
+      onSetIsMember(isJoining)
     }catch(err){
       console.log(err); 
     } finally{
@@ -39,32 +46,37 @@ function CommunityHeader({
     if (community) {
       const timer = setTimeout(() => {
         setIsReady(true);
-      }, 3000);
+      }, 30);
       // return () => clearTimeout(timer);
     }
   }, [community]);
 
-  console.log("amIModerator in header", amIModerator);
+  console.log('img')
 
   return (
     <>
       {community && (
         <Row
-          className="mw-75 mx-auto g-5 mt-3 position-relative rounded"
+          className="mx-auto g-0 mt-3 rounded shadow-lg"
           style={{
             overflow: "hidden",
+            maxWidth: '75%',
           }}
         >
-          <Col sm={12} className="p-0 ">
+          <Col sm={12} className="p-0 order-0">
             <Image
               src={community.cover}
               fluid
-              className="w-100 h-400 rounded-top"
+              className={`w-100 ${imageHeightClass} rounded-top`}
+              style={{
+                minHeight: showFullImage ? '400px' : '100px', 
+                objectFit: 'cover'
+              }}
             />
           </Col>
           <Col
             sm={12}
-            className="position-absolute w-100 d-flex justify-content-between align-items-end community-banner"
+            className="p-3 d-flex flex-column flex-lg-row justify-content-between align-items-lg-end community-banner"
             style={{ ...communityCSSVars(community.style) }}
           >
             <div>
@@ -93,7 +105,7 @@ function CommunityHeader({
             </div>
             {isReady && (
               <div
-                className="d-flex gap-3 align-items-center"
+                className="d-flex gap-3 align-items-center mt-3 mt-lg-0"
                 style={{
                   opacity: isReady ? 1 : 0,
                   transition: "opacity 0.1s ease-in-out",
@@ -101,20 +113,19 @@ function CommunityHeader({
               >
                 {amIMember && (
                   <Link to={`/communities/${community._id}/posts/add-post`}>
-                    <Button variant="outline-secondary" className="rounded-2">
+                    <Button variant="secondary" className="rounded-2">
                       <i className="bi bi-plus-square me-2" />
                       Add post
                     </Button>
                   </Link>
                 )}
 
-                <Button variant="outline-secondary" className="rounded-2" onClick={handleJoinCommunity}>
+                <Button variant={`${amIMember ? 'secondary' : 'success'}`} className={`rounded-2 ${!amIMember && 'join-pulse'}`} onClick={handleJoinCommunity}>
                   {amIMember ? (
                     <i className="bi bi-dash-square me-2"></i>
                   ) : (
                     <i className="bi bi-plus-square me-2"></i>
                   )}
-                  {/* TODO: HELL BUTTON */}
                   {isReady && amIMember ? "Leave" : "Join"} 
                 </Button>
 

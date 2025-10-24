@@ -6,10 +6,10 @@ import Community from "../models/Community.js";
 export async function canManageCommunity(request, response, next) {
   const logged = request.loggedUser;
   const { communityId } = request.params;
-
+  // console.log('***logged in delete', logged);
   try {
     const community = await Community.findById(communityId);
-    if (logged.role === "admin" || community.moderator.toString() === logged.id)
+    if (logged.role === "admin" || community.moderator._id.toString() === logged._id)
       next();
     else
       return response

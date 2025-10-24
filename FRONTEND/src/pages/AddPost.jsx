@@ -22,7 +22,7 @@ function AddPost() {
   const { commId, postId } = useParams();
   const isEdit = !!postId;
 
-  const [showPreview, setShowPreview] = useState(false); //preview del contenuto
+  // const [showPreview, setShowPreview] = useState(false); //preview del contenuto
   const [validated, setValidated] = useState(false); //validazione form
   const [cover, setCover] = useState(); //gestione coverImg
   const [coverPreview, setCoverPreview] = useState();
@@ -265,7 +265,7 @@ function AddPost() {
             </Row>
 
             <Button type="submit" variant="outline-secondary">
-              Submit form
+              {isEdit ? 'APPLY' : 'CREATE POST'}
             </Button>
           </Form>
         </>

@@ -8,6 +8,7 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
   const { loggedUser } = useAuthContext();
 
   const [community, setCommunity] = useState(null);
+  const [missingMembers, setMissingMembers] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   const [showEnlistBanner, setShowEnlistBanner] = useState(false);
@@ -61,6 +62,7 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
         console.log('mine', mine); 
         console.log("altreadyMember", alreadyMember);
         setCommunity(res.data);
+        setMissingMembers(import.meta.env.VITE_MIN_MEMBERS - res.data.members?.length); 
       } catch (err) {
         console.log(err);
       } finally {
@@ -76,22 +78,25 @@ function CommunityDetails({ commId, showCommDetails, setShowCommDetails, handleU
           show={showCommDetails}
           onHide={handleClose}
           centered
+          scrollable
           className="min-vh50"
         >
           <Modal.Header closeButton className="border-0" />
-          <Modal.Body className="scrollmodal">
+          <Modal.Body >
             <Card className="border-0">
-              <Card.Img src={community?.cover} />
+              <Card.Img src={community?.cover} style={{maxHeight: '10em'}} />
               <Card.Body
-                className="community-banner rounded"
+                className="community-banner rounded-bottom"
                 style={{ ...communityCSSVars(community?.style) }}
               >
                 <Card.Title>{community?.name}</Card.Title>
-                <Card.Text>
-                  {community?.members.length} /{" "}
-                  {import.meta.env.VITE_MIN_MEMBERS}
-                </Card.Text>
                 <Card.Text>{community?.description}</Card.Text>
+                <Card.Text>
+                  {/* Currently {community?.members.length} out of {" "}
+                  {import.meta.env.VITE_MIN_MEMBERS} members */}
+                  Still needing {missingMembers} member{missingMembers>1 && 's'}
+                </Card.Text>
+                
               </Card.Body>
               <Card.Footer className="border-0 bg-transparent">
                 <Row className="align-items-center">

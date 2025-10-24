@@ -21,10 +21,11 @@ function DetailsModal({
       show={showDetails}
       onHide={handleClose}
       centered
+      scrollable
       className="min-vh50"
     >
       <Modal.Header closeButton className="border-0" />
-      <Modal.Body className="scrollmodal">
+      <Modal.Body >
         <Tab.Container defaultActiveKey="followers">
           <Nav variant="underline" justify>
             <Nav.Item>

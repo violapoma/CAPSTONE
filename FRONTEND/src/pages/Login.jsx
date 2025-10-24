@@ -7,7 +7,7 @@ function Login() {
   const [showLogin, setShowLogin] = useState(false); //login modal
 
   return (
-    <Container className={`loginContainer vh60 my-5 d-flex flex-column justify-content-center align-items-center bg-light rounded `}>
+    <Container className={`loginContainer vh60 my-5 d-flex flex-column justify-content-center align-items-center bg-light rounded shadow-lg `}>
       <h2 className="fs-1">Welcome!</h2>
       <Row className="py-4 w-100 justify-content-between g-3">
         <Col xs={12} md={6}>

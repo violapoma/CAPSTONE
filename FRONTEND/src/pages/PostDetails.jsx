@@ -8,16 +8,19 @@ import CommentArea from "../components/Comments/CommentArea";
 import ErrorModal from "../components/Modals/ErrorModal";
 import { useAuthContext } from "../contexts/authContext";
 import ReactionRow from "../components/Helpers/ReactionRow";
+import ConfirmDelete from "../components/Modals/ConfirmDelete";
 
 function PostDetails() {
   const navigate = useNavigate();
+  const defaultCover =
+    "https://res.cloudinary.com/dm9gnud6j/image/upload/v1759786199/noimgPost_npspix.webp";
   const { postId, commId } = useParams(); //id del post
   const { loggedUser } = useAuthContext();
   const userId = loggedUser?._id;
 
   const [post, setPost] = useState(null);
   const [dateToShow, setDateToShow] = useState("");
-  const [show, setShow] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [successDel, setSuccessDel] = useState(false);
   const [isMine, setIsMine] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -25,8 +28,8 @@ function PostDetails() {
   const [showError, setShowError] = useState(false);
   const [consoleMsg, setConsoleMsg] = useState("");
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowConfirmDelete(false);
+  const handleShow = () => setShowConfirmDelete(true);
 
   const getPost = async () => {
     try {
@@ -54,36 +57,40 @@ function PostDetails() {
 
       setPost(fetchedPost);
     } catch (e) {
-      setConsoleMsg(
-        "An error occurred while fetching your post 😿 try again later"
-      );
-      setShowError(true);
-      console.log("errore nel recupero del post", e);
+      if (e.response && (e.response.status === 404 || e.response.status === 403)) {
+        navigate('/non-existing');
+      } else{
+        setConsoleMsg(
+          "An error occurred while fetching your post 😿 try again later"
+        );
+        setShowError(true);
+        console.log("errore nel recupero del post", e);
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const deletePost = async () => {
-    try {
-      const res = axiosInstance.delete(
-        `/communities/${commId}/posts/${postId}`
-      );
-      console.log("deleted successfully");
-      setSuccessDel(true);
+  // const deletePost = async () => {
+  //   try {
+  //     const res = axiosInstance.delete(
+  //       `/communities/${commId}/posts/${postId}`
+  //     );
+  //     console.log("deleted successfully");
+  //     setSuccessDel(true);
 
-      setTimeout(() => {
-        handleClose();
-        navigate(`/communities/${commId}`);
-      }, 1000);
-    } catch (e) {
-      setConsoleMsg(
-        "An error occurred while deleting your post 😿 try again later"
-      );
-      setShowError(true);
-      console.log("errore nella delete", e);
-    }
-  };
+  //     setTimeout(() => {
+  //       handleClose();
+  //       navigate(`/communities/${commId}`);
+  //     }, 1000);
+  //   } catch (e) {
+  //     setConsoleMsg(
+  //       "An error occurred while deleting your post 😿 try again later"
+  //     );
+  //     setShowError(true);
+  //     console.log("errore nella delete", e);
+  //   }
+  // };
 
   useEffect(() => {
     getPost();
@@ -101,14 +108,22 @@ function PostDetails() {
                 <h1 className="fw-bold">{post.title}</h1>
                 {post.subtitle && <h3>{post.subtitle}</h3>}
                 <div className="d-flex align-items-center justify-content-between">
-                  <div className="w-50 d-flex justify-content-evenly align-items-center">
+                  <div className="w-auto d-flex justify-content-around align-items-center">
+                    by{" "}
                     <Link
                       to={isMine ? "/" : `/users/${post.author?._id}`}
-                      className="authorLink"
+                      className="fw-bold mx-2"
                     >
                       {post.author?.username}
+                    </Link>{" "}
+                    in{" "}
+                    <Link
+                      to={`/communities/${commId}`}
+                      className="fw-bold mx-2"
+                    >
+                      {post.inCommunity?.name}
                     </Link>
-                    <span className="mx-3">·</span>
+                    <span className="mx-1">·</span>
                     <span>{dateToShow}</span>
                   </div>
                   {isMine && (
@@ -134,9 +149,11 @@ function PostDetails() {
                   )}
                 </div>
               </div>
-              <div className="py-3">
-                <img src={post.cover} alt="post cover" className="postImg" />
-              </div>
+              {post.cover !== defaultCover && (
+                <div className="py-3">
+                  <img src={post.cover} alt="post cover" className="postImg" />
+                </div>
+              )}
               {post.content && typeof post.content === "string" ? (
                 parse(post.content)
               ) : (
@@ -145,7 +162,7 @@ function PostDetails() {
             </div>
             <ReactionRow
               type="post"
-              ids={{ commId, postId}}
+              ids={{ commId, postId }}
               initialLikes={post.likes}
               initialDislikes={post.dislikes}
               loggedUser={loggedUser}
@@ -155,7 +172,13 @@ function PostDetails() {
         )
       )}
 
-      <Modal show={show} onHide={handleClose} centered>
+      <ConfirmDelete
+        showConfirmDelete={showConfirmDelete}
+        setShowConfirmDelete={setShowConfirmDelete}
+        what="post"
+      />
+
+      {/* <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton className="border-0" />
         <Modal.Body className="text-center">
           {successDel ? (
@@ -177,7 +200,7 @@ function PostDetails() {
             </Button>
           </Modal.Footer>
         )}
-      </Modal>
+      </Modal> */}
 
       <ErrorModal
         consoleMsg={consoleMsg}

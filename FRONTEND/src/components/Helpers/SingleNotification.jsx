@@ -23,11 +23,11 @@ function SingleNotification({ notification, setNotifications }) {
       link: `/communities/${meta?.communityId}/posts/${sourceModel === 'Post'? source : meta?.postId}`,
     },
     comment: {
-      text: "commented on your post",
+      text: "commented on your ",
       link: `communities/${meta?.communityId}/posts/${source}`,
     },
     reply: {
-      text: "replied to your comment",
+      text: "replied to your ",
       link: `communities/${meta?.communityId}/posts/${source}`,
     },
     follow: {
@@ -39,7 +39,7 @@ function SingleNotification({ notification, setNotifications }) {
       link: `/users/${from._id}`,
     },
     community: {
-      text: `your community has been ${meta?.details || "updated"}`,
+      text: `your community is now ${meta?.details || "updated"}`,
       link: `/communities/${source}`,
     },
   };

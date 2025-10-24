@@ -26,8 +26,8 @@ function NotificationPanel() {
   useEffect(() => {
     fetchNotifications();
     // Polling ogni 15s, opzionale
-    // const interval = setInterval(fetchNotifications, 15000);
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchNotifications, 15000);
+    return () => clearInterval(interval);
   }, [loggedUser]);
 
   const hasUnread = notifications.some(n => !n.read);
@@ -39,7 +39,6 @@ function NotificationPanel() {
         className="position-relative cursorPointer d-flex align-items-center me-2"
         onClick={handleShow}
       >
-        {/* TODO: new notification alert */}
         <i className="bi bi-bell fs-3 text-dark" />
         {hasUnread && (
           <div

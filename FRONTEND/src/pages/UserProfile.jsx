@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,  useLocation } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
 import MyLoader from "../components/Helpers/MyLoader";
 import axiosInstance from "../../data/axios";
@@ -14,7 +14,6 @@ import UserCommunityPreview from "../components/UserProfile/UserCommunityPreview
 
 function UserProfile({ isMe }) {
 
-  console.log('in userprofile');
   const { userId } = useParams();
   const { token, loggedUser, login } = useAuthContext();
 
@@ -103,6 +102,7 @@ function UserProfile({ isMe }) {
   //   loadingFollowing,
   // ]);
 
+
   return (
     <div>
       {loadingUser &&
@@ -117,7 +117,7 @@ function UserProfile({ isMe }) {
       ) : (
         user && (
           <Row className="mw-75 mx-auto my-4 gy-5">
-            <Col sm={9} className="mx-auto">
+            <Col xs={12} md={9} className="mx-auto">
               <UserHeader
                 isMe={isMe}
                 user={user}
@@ -129,13 +129,13 @@ function UserProfile({ isMe }) {
                 setRefreshTrigger={setRefreshTrigger}
               />
             </Col>
-            <Col sm={stillNotActive.length > 0 ? 9 : 12}>
+            <Col xs={12} md={stillNotActive.length > 0 ? 9 : 12}>
               <h3 className="mb-3">Posts</h3>
 
               <UserPosts posts={posts} />
             </Col>
             {stillNotActive.length > 0 && (
-              <Col sm={3}>
+              <Col xs={12} md={3}>
                 <h3> Help me create these communitites!</h3>
                 <UserCommunityPreview communities={communities} />
               </Col>

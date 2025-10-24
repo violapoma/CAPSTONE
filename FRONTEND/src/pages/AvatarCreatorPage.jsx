@@ -27,7 +27,7 @@ const AvatarCreatorPage = () => {
       setLoggedUser(updated); 
       console.log('avatarPNG', pngURL);
       
-      navigate('/');
+      navigate('/', { state: { fromEdit: true } });
     } catch (err) {
       console.error("Error exporting avatar:", err);
       alert("Non è stato possibile salvare l'avatar, riprova.");

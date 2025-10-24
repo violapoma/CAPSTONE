@@ -97,10 +97,10 @@ function BrowseCommunities() {
   }, [loggedUser, rerender]);
 
   return (
-    <Row className="mw-80 mx-auto mt-4">
-      <Col sm={9}>
+    <Row className="mw-80 mx-auto mt-4 gy-4">
+      <Col xs={12} lg={9}>
         <Tab.Container defaultActiveKey="member" className="mb-4">
-          <Nav variant="underline">
+          <Nav variant="underline" justify className="d-flex align-items-end">
             <Nav.Item>
               <Nav.Link eventKey="member">Your communities</Nav.Link>
             </Nav.Item>
@@ -125,7 +125,7 @@ function BrowseCommunities() {
               <Row className="g-3">
                 {userCommunities?.length > 0 ? (
                   userCommunities.map((comm) => (
-                    <Col sm={4} key={comm._id} className="hovering ps-0">
+                    <Col xs={6} md={4} key={comm._id} className="hovering ps-0">
                       <Link to={`/communities/${comm._id}`}>
                         <CommunityPreview community={comm} />
                       </Link>
@@ -141,7 +141,7 @@ function BrowseCommunities() {
                 {myNotActiveCommunitiesAsMember?.length > 0 ? (
                   myNotActiveCommunitiesAsMember.map((comm) => (
                     <Col
-                      sm={4}
+                    xs={6} md={4}
                       key={comm._id}
                       onClick={()=>handleCommDetails(comm._id)}
                       className="hovering ps-0"
@@ -158,7 +158,7 @@ function BrowseCommunities() {
               <Row>
                 {joinableCommunities?.length > 0 ? (
                   joinableCommunities.map((comm) => (
-                    <Col sm={4} key={comm._id} className="hovering ps-0">
+                    <Col xs={6} md={4} key={comm._id} className="hovering ps-0">
                       <Link to={`/communities/${comm._id}`}>
                         <CommunityPreview community={comm} />
                       </Link>
@@ -173,7 +173,7 @@ function BrowseCommunities() {
         </Tab.Container>
       </Col>
 
-      <Col sm={3} className="fixedSidebar" >
+      <Col xs={12} lg={3} className="fixedSidebar" >
         <Col sm={12}>
           <h3 className="text-end">Help build these communities!</h3>
           <Row className="g-3 justify-content-center">

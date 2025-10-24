@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../../contexts/authContext";
 import axiosInstance from "../../../data/axios";
 import { updateUserAvatar } from "../../utils/updateUserAvatar";
+import ConfirmDelete from "./ConfirmDelete";
 
 function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrigger }) {
   const maxChars = 300;
@@ -27,6 +28,7 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
   const [success, setSuccess] = useState(false);
   //const [isSwitchOn, setIsSwitchOn] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false); 
 
   const [bioLength, setBioLength] = useState(0);
   const [profilePic, setProfilePic] = useState(null);
@@ -144,6 +146,7 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
   };
 
   return (
+    <>
     <Modal
       scrollable
       centered
@@ -241,7 +244,8 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
                       <div
                         className={`d-flex justify-content-center align-items-center ${useAvatar ? 'cursorPointer' : 'pointerEvtsNone'}`}
                         onClick={() => {
-                          navigate("/avatar");
+                          navigate("/avatar", { state: { fromEdit: true } });
+                          sessionStorage.setItem("reopenEditModal", "true");
                         }}
                       >
                         {loggedUser ? (
@@ -294,7 +298,11 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
                       className="me-2"
                     />
                   )}
-                  Update
+                  UPDATE
+                </Button>
+
+                <Button as={Col} sm={2} variant="outline-danger" className="mx-auto" onClick={()=>setShowConfirmDelete(true)}>
+                  DELETE YOUR ACCOUNT PERMANENTLY
                 </Button>
               </Row>
             </Form>
@@ -302,6 +310,8 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
         )}
       </Modal.Body>
     </Modal>
+    <ConfirmDelete showConfirmDelete={showConfirmDelete} setShowConfirmDelete={setShowConfirmDelete} what='account' />
+    </>
   );
 }
 

@@ -4,7 +4,6 @@ import DetailsModal from "./DetailsModal";
 import { useAuthContext } from "../../contexts/authContext";
 import axiosInstance from "../../../data/axios";
 import EditUserModal from "../Modals/EditUserModal";
-
 function UserHeader({
   isMe,
   user,
@@ -37,21 +36,26 @@ function UserHeader({
     setAlreadyFollowing(already);
   }, [followers, loggedUser, isMe]);
 
+
   useEffect(() => {
-    // 1. Filtra i dati direttamente dalla prop 'communities'
+    const shouldReopen = sessionStorage.getItem("reopenEditModal");
+    if (shouldReopen) {
+      setShowEditUserModal(true);
+      sessionStorage.removeItem("reopenEditModal");
+    }
+  }, []);
+
+  useEffect(() => {
     const moderatingActive =
       communities.moderatorOf?.filter((c) => c.active) || [];
     const memberActive = communities.memberOf?.filter((c) => c.active) || [];
 
-    // 2. Aggiorna gli stati per la modale
     setActiveAsModerator(moderatingActive);
     setActiveAsMember(memberActive);
 
-    // 3. Calcola e imposta il totale usando i nuovi array filtrati (che sono immediatamente disponibili qui)
     const newTotal = moderatingActive.length + memberActive.length;
     setTotalCommunities(newTotal);
 
-    // Dipendenza corretta: solo la prop 'communities'
   }, [communities]);
 
   const handleFollowToggle = async () => {

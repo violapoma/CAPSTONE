@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import Community from "./Community.js";
 
 const PostSchema = new Schema({
   title: {type: String, required:true, unique:true},
@@ -8,7 +9,7 @@ const PostSchema = new Schema({
   inCommunity: {type: Schema.Types.ObjectId, ref:'Community', required: true},
   author: {type: Schema.Types.ObjectId, ref: 'User', required: true},
   likes: [{type: Schema.Types.ObjectId, ref: 'User'}],
-  dislikes: [{type: Schema.Types.ObjectId, ref: 'Users'}], 
+  dislikes: [{type: Schema.Types.ObjectId, ref: 'User'}], 
 }, {timestamps: true});
 
 export const Post = mongoose.model('Post', PostSchema); 

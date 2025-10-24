@@ -7,6 +7,7 @@ import parse from "html-react-parser"; //per quill
 import ErrorModal from "../Modals/ErrorModal";
 import ReactionRow from "../Helpers/ReactionRow";
 import { communityCSSVars } from "../../utils/communityCssVars";
+import ConfirmDelete from "../Modals/ConfirmDelete";
 
 function SingleComment({
   comment,
@@ -23,7 +24,7 @@ function SingleComment({
   const { loggedUser } = useAuthContext();
   const date = new Date(comment.updatedAt);
   //modale di cancellazione
-  const [show, setShow] = useState(false);
+  const [showConfirmDelete, setShowShowConfirmDelete] = useState(false);
 
   const commentRef = useRef(null);
 
@@ -55,24 +56,24 @@ function SingleComment({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const deleteComment = async () => {
-    try {
-      const deleting = await axiosInstance.delete(
-        `/posts/${postId}/comments/${comment._id}`
-      );
-      setSuccessDel(true);
-      setTimeout(() => {
-        handleClose();
-        setSuccessDel(false);
-      }, 1000);
-    } catch (error) {
-      console.log("errore cancellazione commento", error);
-      setConsoleMsg(
-        "An error occurred while deleting your comment, try again later"
-      );
-      setShowError(true);
-    }
-  };
+  // const deleteComment = async () => {
+  //   try {
+  //     const deleting = await axiosInstance.delete(
+  //       `/posts/${postId}/comments/${comment._id}`
+  //     );
+  //     setSuccessDel(true);
+  //     setTimeout(() => {
+  //       handleClose();
+  //       setSuccessDel(false);
+  //     }, 1000);
+  //   } catch (error) {
+  //     console.log("errore cancellazione commento", error);
+  //     setConsoleMsg(
+  //       "An error occurred while deleting your comment, try again later"
+  //     );
+  //     setShowError(true);
+  //   }
+  // };
 
   const editComment = () => {
     //console.log("setCommentToEdit in singlecomment", comment);
@@ -91,32 +92,40 @@ function SingleComment({
       <Row
         className={`${!comment.parent && "mb-1 mx-1 py-3 commentChain"}`}
         ref={commentRef}
-        style={communityStyle ? { ...communityCSSVars(communityStyle) } : {}}      >
-        <Col sm={1}>
+        style={communityStyle ? { ...communityCSSVars(communityStyle) } : {}}
+      >
+        <Col sm={2} lg={1}>
           <Image
-            src={comment.author.usesAvatar ? comment.author.avatarRPM : comment.author.profilePic}
+            src={
+              comment.author.usesAvatar
+                ? comment.author.avatarRPM
+                : comment.author.profilePic
+            }
             roundedCircle
             className="dropdownAvatar"
           />
         </Col>
-        <Col sm={11}>
+        <Col sm={10}>
           <Row>
-            <Col sm={5}>
+            <Col sm={6}>
               <Link
                 to={
                   comment.author._id === loggedUser._id
                     ? "/"
-                    : `/authors/${comment.author._id}`
+                    : `/users/${comment.author._id}`
                 }
                 className="authorLink"
               >
                 {comment.author.username}
               </Link>
 
-              <div className="d-inline mx-3">
+              <div className="d-inline mx-lg-3">
                 {isMine && (
                   <>
                     <Button
+                      as={Col}
+                      xs={1}
+                      lg={2}
                       variant="outline-secondary"
                       onClick={editComment}
                       className="border-0 text-dark button me-2"
@@ -124,8 +133,11 @@ function SingleComment({
                       <i className="bi bi-pencil-square" />
                     </Button>
                     <Button
+                      as={Col}
+                      xs={1}
+                      lg={2}
                       variant="outline-secondary"
-                      onClick={handleShow}
+                      onClick={()=>setShowShowConfirmDelete(true)}
                       className="border-0 text-dark button me-2"
                     >
                       <i className="bi bi-trash" />
@@ -134,6 +146,9 @@ function SingleComment({
                 )}
                 {!comment.child && depth < 2 && (
                   <Button
+                    as={Col}
+                    xs={1}
+                    lg={2}
                     variant="outline-secondary"
                     onClick={replyToComment}
                     className="border-0 text-dark button me-2"
@@ -143,7 +158,7 @@ function SingleComment({
                 )}
               </div>
             </Col>
-            <Col sm={7} className="text-end px-0">
+            <Col sm={4} lg={5} className="text-end px-0">
               {/* date */}
               {formatted}
               <ReactionRow
@@ -183,7 +198,7 @@ function SingleComment({
         )}
       </Row>
 
-      <Modal show={show} onHide={handleClose} centered>
+      {/* <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton className="border-0" />
         <Modal.Body className="text-center">
           {successDel ? (
@@ -196,7 +211,7 @@ function SingleComment({
           )}
           {consoleMsg && <Alert variant="danger">{consoleMsg}</Alert>}
         </Modal.Body>
-        {!successDel && (
+        {!successDel && (                                   
           <Modal.Footer className="border-0">
             <Button variant="secondary" onClick={handleClose}>
               Go back
@@ -206,7 +221,8 @@ function SingleComment({
             </Button>
           </Modal.Footer>
         )}
-      </Modal>
+      </Modal> */}
+      <ConfirmDelete showConfirmDelete={showConfirmDelete} setShowConfirmDelete={setShowShowConfirmDelete} what='comment' />      
 
       <ErrorModal
         consoleMsg={consoleMsg}

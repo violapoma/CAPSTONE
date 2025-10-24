@@ -1,6 +1,7 @@
 import { createNotification } from "../helpers/createNotification.js";
 import mailer from "../helpers/mailer.js";
 import Community from "../models/Community.js";
+import { Post } from "../models/Post.js";
 import User from "../models/User.js";
 import { communityIdValidator } from "../validators/community.validator.js";
 
@@ -127,7 +128,7 @@ export async function changeStatus(request, response) {
     To your next idea!
   `;
 
-    const infoMail = await mailer.sendMail({
+    const infoMail = mailer.sendMail({
       to: request.loggedUser.email,
       subject: `News regarding ${updating.name}!`,
       html: html,
@@ -189,7 +190,16 @@ export async function joinCommunity(request, response) {
         message: `User ${request.loggedUser.username} is already member of '${community.name}'`,
       });
     community.members.push(userId);
-    if (community.members.length > MIN_MEMBERS) community.active = true;
+    if (community.members.length >= MIN_MEMBERS){
+      community.active = true;
+      createNotification(community.moderator, {
+        from: request.adminId,
+        category: 'community',
+        source: communityId,
+        sourceModel: 'Community',
+        meta: {details: 'active'}
+      });
+    }
 
     // const html = `
     //   <h1>Hi, ${
@@ -208,7 +218,7 @@ export async function joinCommunity(request, response) {
     // }'>CLICK HERE</a>← to visit ${community.name}</p>
     // `;
 
-    // const infoMail = await mailer.sendMail({
+    // const infoMail = mailer.sendMail({
     //   to: request.loggedUser.email,
     //   subject: `Thanks for joining ${community.name}!`,
     //   html: html,
@@ -275,7 +285,7 @@ export async function leaveCommunity(request, response) {
     </p>
     To your next idea!
   `;
-      const infoMail = await mailer.sendMail({
+      const infoMail = mailer.sendMail({
         bcc: recipients,
         to: "violapoma@gmail.com",
         subject: `Community ${community.name} has not enough members to stay up`,
@@ -296,6 +306,7 @@ export async function leaveCommunity(request, response) {
 export async function deleteCommunity(request, response) {
   const { communityId } = request.params;
   try {
+    const communityPosts = await Post.deleteMany({inCommunity: communityId}); 
     const deleting = await Community.findByIdAndDelete(communityId);
     if (!deleting)
       return response
@@ -312,7 +323,7 @@ export async function deleteCommunity(request, response) {
     </p>
     To your next idea!
   `;
-      const infoMail = await mailer.sendMail({
+      const infoMail = mailer.sendMail({
         bcc: recipients,
         to: "violapoma@gmail.com",
         subject: `Community ${deleting.name} has not enough members to stay up`,

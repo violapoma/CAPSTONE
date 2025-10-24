@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import axiosInstance from "../../data/axios";
 import CommunityHeader from "../components/Communities/CommunityHeader";
 import { useAuthContext } from "../contexts/authContext";
@@ -9,14 +9,18 @@ import MyLoader from "../components/Helpers/MyLoader";
 
 function CommunityPage() {
   const { commId } = useParams();
-  const { loggedUser } = useAuthContext();
+  //const { loggedUser } = useAuthContext();
 
-  const [amIMember, setAmIMember] = useState(false);
-  const [amIModerator, setAmIModerator] = useState(false);
-  const [community, setCommunity] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [consoleMsg, setConsoleMsg] = useState("");
+  // const [amIMember, setAmIMember] = useState(false);
+  // const [amIModerator, setAmIModerator] = useState(false);
+  // const [community, setCommunity] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [consoleMsg, setConsoleMsg] = useState("");
 
+  //new
+  const { community, isMember, isModerator } = useOutletContext();
+
+  /*
   const fetchCommunity = async () => {
     if (!commId) {
       setConsoleMsg("Invalid request, community id was not recived");
@@ -50,7 +54,8 @@ function CommunityPage() {
     if (commId && loggedUser?._id) {
       fetchCommunity();
     }
-  }, [commId, loggedUser]);
+    console.log('amimember?', amIMember);
+  }, [commId, loggedUser, amIMember]);
 
   return (
     <>
@@ -63,12 +68,13 @@ function CommunityPage() {
             amIMember={amIMember}
             amIModerator={amIModerator}
             onUpdateCommunity={handleUpdateCommunity}
+            setAmIMember={setAmIMember}
           />
           
           {amIMember ? (
             <CommunityPostContainer communityId={commId} commStyle={community?.style}/>
           ) : (
-            <p className="text-center mt-5">devi essere membro per vedere i contenuti</p>
+            <p className="text-center mt-5">You need to join the community to see its content</p>
           )}
         </>
       ) : (
@@ -76,6 +82,17 @@ function CommunityPage() {
           {consoleMsg || "There was a problem while loading community"}
         </p>
       )}
+    </>
+  );*/
+
+  return (
+    <>
+     
+        <CommunityPostContainer
+          communityId={commId}
+          commStyle={community?.style}
+        />
+   
     </>
   );
 }

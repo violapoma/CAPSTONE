@@ -43,15 +43,31 @@ function App() {
                     </SignUpProvider>
                   }
                 />
-                <Route path="/auth/google-callback" element={<GoogleCallback />} />
+                <Route
+                  path="/auth/google-callback"
+                  element={<GoogleCallback />}
+                />
               </Route>
               <Route element={<ProtectedRoutes />}>
                 <Route path="/" element={<UserProfile isMe={true} />} />
                 <Route path="/avatar" element={<AvatarCreatorPage />} />
-                <Route path="/users/:userId" element={<UserProfile isMe={false} />} />
-                <Route path='/first-community' element={<FirstCommunity />} />
+                <Route
+                  path="/users/:userId"
+                  element={<UserProfile isMe={false} />}
+                />
+                <Route path="/first-community" element={<FirstCommunity />} />
                 <Route path="/communities" element={<BrowseCommunities />} />
                 <Route element={<CommunityMember />}>
+                  {/* <Route
+                    path="/communities/:commId"
+                    element={<CommunityPage />}
+                  /> */}
+                  {/* new */}
+                  {/* <Route 
+                    path="/communities/:commId"
+                    element={null}
+                  /> */}
+                  {/* new new */}
                   <Route
                     path="/communities/:commId"
                     element={<CommunityPage />}

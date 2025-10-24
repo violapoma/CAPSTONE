@@ -3,7 +3,7 @@ import {joiObjectId, joiObjectIdArray, joiObjectIdNotRequired } from "../helpers
 
 export const postValidator = Joi.object({
   title: Joi.string().required(),
-  subtitle: Joi.string().optional(),
+  subtitle: Joi.string().optional().allow(""),
   content: Joi.string().required(),
   inCommunity: joiObjectIdNotRequired(),
   author: joiObjectIdNotRequired(),

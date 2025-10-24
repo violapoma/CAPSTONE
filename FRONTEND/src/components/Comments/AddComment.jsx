@@ -169,7 +169,7 @@ function AddComment({
               theme="snow"
             />
           </Col>
-          <Col sm={3}>
+          <Col xs={6} ls={3}>
             <Button
               type="submit"
               variant="outline-secondary"

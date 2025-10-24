@@ -42,14 +42,14 @@ function ReactionRow({
 
   return (
     <Row className={`w-75 ${type==='post' ? 'm-auto' : ' ms-auto'} px-0 mb-3 justify-content-end`}>
-      <Col sm={type==='post' ? 1 : 2} className="cursorPointer hovering d-flex align-items-center gap-1">
+      <Col xs={type==='post' ? 6 : 2} lg={type==='post' ? 1 : 2} className="cursorPointer hovering d-flex align-items-center justify-content-end gap-1">
         <i
           className={`bi bi-hand-thumbs-up${likes.includes(loggedUser._id) ? "-fill" : ""} me-2`}
           onClick={() => handleReaction("like")}
         />
         {likes.length}
       </Col>
-      <Col sm={type==='post' ? 1 : 2} className="cursorPointer hovering d-flex align-items-center gap-1">
+      <Col xs={type==='post' ? 6 : 2} lg={type==='post' ? 1 : 2} className="cursorPointer hovering d-flex align-items-center gap-1">
         <i
           className={`bi bi-hand-thumbs-down${dislikes.includes(loggedUser._id) ? "-fill" : ""} me-2`}
           onClick={() => handleReaction("dislike")}

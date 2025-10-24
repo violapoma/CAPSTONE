@@ -86,7 +86,7 @@ function CommentArea() {
         ) : (
           commentList.length > 0 &&
           commentList.map((comment) => (
-            <Col sm={12} key={comment._id}>
+            <Col xs={12} key={comment._id}>
               <SingleComment
                 comment={comment}
                 postId={postId}

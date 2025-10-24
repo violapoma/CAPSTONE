@@ -1,20 +1,22 @@
-import {
-  Container,
-  Image,
-  ListGroup,
-  Nav,
-  NavDropdown,
-  Navbar,
-  Row,
-} from "react-bootstrap";
+import { Button, Container, Form, Image, InputGroup, Navbar } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { useAuthContext } from "../contexts/authContext";
-import SingleNotification from "./Helpers/SingleNotification";
 import NotificationPanel from "./NotificationPanel";
-//import Logo from "./Logo"; //TODO: logo component
+import { useState } from "react";
+import SearchPanel from "./SearchPanel";
 
 function Header() {
   const { token, logout, loggedUser } = useAuthContext();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      setShowSearch(true);
+    }
+  };
 
   return (
     <Navbar expand="lg" className="navbarStyle">
@@ -24,7 +26,6 @@ function Header() {
           to="/"
           className="py-0 me-2 d-flex align-items-center"
         >
-          {/* <Logo />  TODO: LOGO HERE*/}
           <Image
             src="/imgs/chitchat-logo.png"
             style={{ width: "4em" }}
@@ -35,6 +36,18 @@ function Header() {
         {token && loggedUser && (
           <>
             <div className="d-flex align-items-center">
+              <Form className="me-3 w-100" onSubmit={handleSearch}>
+                <InputGroup style={{width: '30em'}}>
+                <Form.Control
+                    type="search"
+                    placeholder="Search form communities or users..."
+                    aria-label="Search"
+                    value={searchTerm}
+                    onChange={(e)=>setSearchTerm(e.target.value)}
+                  />
+                  <InputGroup.Text as={Button} type="submit" variant='outline-secondary' className="hovering"><i className="bi bi-search" /></InputGroup.Text>
+                </InputGroup>
+              </Form>
               <div className="d-flex align-items-center me-3">
                 <NavLink to={"/avatar"} className="d-flex align-items-center">
                   <i className="bi bi-controller fs-3 me-3" />
@@ -46,46 +59,15 @@ function Header() {
                   <i className="bi bi-layout-wtf fs-3 me-3" />
                 </NavLink>
                 <NotificationPanel />
+                <NavLink className="d-flex align-items-center" onClick={logout}>
+                  <i className="bi bi-box-arrow-right fs-3 me-3" />
+                </NavLink>
               </div>
-
-              {/* <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav"> */}
-                <Nav className="ms-auto d-flex">
-                  <NavDropdown
-                    title={
-                      <Image
-                        src={
-                          loggedUser.usesAvatar
-                            ? loggedUser.avatarRPM
-                            : loggedUser.profilePic
-                        }
-                        roundedCircle
-                        className="dropdownAvatar"
-                      />
-                    }
-                    id="nav-avatar-dropdown"
-                    className="w-50"
-                  >
-                    <NavDropdown.Header>
-                      {loggedUser.username}
-                    </NavDropdown.Header>
-                    <NavDropdown.Item to="/" as={Link}>
-                      View profile
-                    </NavDropdown.Item>
-                    <NavDropdown.Item to="/communities" as={Link}>
-                      Browse communities
-                    </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item to="/" as={Link} onClick={logout}>
-                      Logout
-                    </NavDropdown.Item>
-                  </NavDropdown>
-                </Nav>
-              {/* </Navbar.Collapse> */}
             </div>
           </>
         )}
       </Container>
+      <SearchPanel show={showSearch} handleClose={()=>setShowSearch(false)} searchTerm={searchTerm} />
     </Navbar>
   );
 }

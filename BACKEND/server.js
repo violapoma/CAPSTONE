@@ -22,6 +22,7 @@ import { userIdValidator } from "./validators/user.validator.js";
 import { checkExistingUserMw } from "./middlewares/checkExistingUserMw.js";
 import googleStrategy from "./config/passportConfig.js";
 import passport from "passport";
+import searchRouter from "./routers/search.router.js";
 
 
 const server = express();
@@ -43,6 +44,7 @@ passport.use(googleStrategy);
 //routers
 server.use('/auth', authRouter);
 server.use('/me', authMW, meRouter); 
+server.use('/search', authMW, searchRouter); 
 server.use('/users/:userId', authMW, validate(userIdValidator), checkExistingUserMw, userRouter);
 server.use('/communities', communityRouter);
 server.use('/notifications', authMW, notificationRouter);

@@ -9,9 +9,9 @@ function UserPosts({ posts = [] }) {
       {posts ? (
         <Row>
           {posts.map((p) => (
-            <Col sm={4}  key={p._id}>
+            <Col sm={6} md={4} key={p._id}>
               <Link
-                to={`/communities/${p.inCommunity._id}/posts/${p._id}`}
+                to={`/communities/${p.inCommunity?._id}/posts/${p._id}`}
               >
                 <PostPreview post={p} />
               </Link>

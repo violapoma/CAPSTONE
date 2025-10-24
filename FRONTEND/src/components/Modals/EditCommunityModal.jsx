@@ -4,7 +4,12 @@ import ColorPicker from "../Helpers/ColorPicker";
 import CustomFileInput from "../Helpers/CustomFileInput";
 import axiosInstance from "../../../data/axios";
 
-function EditComminityModal({ showEditModal, setShowEditModal, community, onUpdateCommunity }) {
+function EditComminityModal({
+  showEditModal,
+  setShowEditModal,
+  community,
+  onUpdateCommunity,
+}) {
   const maxChars = 600;
 
   const [success, setSuccess] = useState(false);
@@ -42,7 +47,7 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
   };
 
   const handleStyleChange = useCallback(
-    (newStyle) => setFormData(prev => ({ ...prev, style: newStyle })),
+    (newStyle) => setFormData((prev) => ({ ...prev, style: newStyle })),
     []
   );
 
@@ -65,16 +70,20 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
     setValidated(true);
     setLoading(true);
     try {
-      let updatedCommunity = (await axiosInstance.put(`/communities/${community._id}`, formData)).data;
+      let updatedCommunity = (
+        await axiosInstance.put(`/communities/${community._id}`, formData)
+      ).data;
 
       if (cover) {
         const coverFD = new FormData();
         coverFD.append("cover", cover);
-        updatedCommunity = (await axiosInstance.patch(
-          `/communities/${community._id}/cover`,
-          coverFD,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        )).data;
+        updatedCommunity = (
+          await axiosInstance.patch(
+            `/communities/${community._id}/cover`,
+            coverFD,
+            { headers: { "Content-Type": "multipart/form-data" } }
+          )
+        ).data;
       }
 
       setSuccess(true);
@@ -107,7 +116,14 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
   }, [community]);
 
   return (
-    <Modal size="lg" show={showEditModal} onHide={handleClose} scrollable centered>
+    <>
+    <Modal
+      size="lg"
+      show={showEditModal}
+      onHide={handleClose}
+      scrollable
+      centered
+    >
       <Modal.Header closeButton className="border-0">
         <h2 className="ms-4">Edit your community</h2>
       </Modal.Header>
@@ -118,10 +134,17 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
         </Modal.Body>
       ) : (
         <Modal.Body>
-          <Form id="editCommunityForm" noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form
+            id="editCommunityForm"
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+          >
             <Row className="mb-3 gy-4 align-items-center">
               <Form.Group as={Col} sm={12} controlId="validationDescr">
-                <Form.Label>Description <span className="asterisk">*</span></Form.Label>
+                <Form.Label>
+                  Description <span className="asterisk">*</span>
+                </Form.Label>
                 <Form.Control
                   required
                   name="description"
@@ -130,10 +153,14 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
                   maxLength={maxChars}
                   placeholder="Write something about your community"
                   value={formData.description}
-                  style={{ resize: "none" }} 
+                  style={{ resize: "none" }}
                   onChange={handleDescrChange}
                 />
-                <span className={`${descrLength > 580 ? "asterisk" : "text-secondary"}`}>
+                <span
+                  className={`${
+                    descrLength > 580 ? "asterisk" : "text-secondary"
+                  }`}
+                >
                   {descrLength} / {maxChars}
                 </span>
                 <Form.Control.Feedback type="invalid">
@@ -142,7 +169,9 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
               </Form.Group>
 
               <Form.Group as={Col} sm={12} controlId="validationGL">
-                <Form.Label>Guidelines <span className="asterisk">*</span></Form.Label>
+                <Form.Label>
+                  Guidelines <span className="asterisk">*</span>
+                </Form.Label>
                 <Form.Control
                   required
                   name="guidelines"
@@ -153,7 +182,11 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
                   value={formData.guidelines}
                   onChange={handleGLChange}
                 />
-                <span className={`${guidelinesLength > 580 ? "asterisk" : "text-secondary"}`}>
+                <span
+                  className={`${
+                    guidelinesLength > 580 ? "asterisk" : "text-secondary"
+                  }`}
+                >
                   {guidelinesLength} / {maxChars}
                 </span>
                 <Form.Control.Feedback type="invalid">
@@ -162,7 +195,10 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
               </Form.Group>
 
               <Form.Group as={Col} sm={12} controlId="commStyle">
-                <ColorPicker initialColors={formData.style} onStyleChange={handleStyleChange} />
+                <ColorPicker
+                  initialColors={formData.style}
+                  onStyleChange={handleStyleChange}
+                />
               </Form.Group>
 
               <Form.Group as={Col} sm={12} controlId="commCover">
@@ -176,13 +212,30 @@ function EditComminityModal({ showEditModal, setShowEditModal, community, onUpda
 
       {!success && (
         <Modal.Footer>
-          <Button form="editCommunityForm" type="submit" variant="outline-secondary" disabled={loading}>
-            {loading && <Spinner animation="border" role="status" size="sm" className="me-2" />}
+          <Button variant="outline-danger" disabled={loading}>
+            DELETE THIS COMMUNITY
+          </Button>
+          <Button
+            form="editCommunityForm"
+            type="submit"
+            variant="outline-secondary"
+            disabled={loading}
+          >
+            {loading && (
+              <Spinner
+                animation="border"
+                role="status"
+                size="sm"
+                className="me-2"
+              />
+            )}
             APPLY
           </Button>
         </Modal.Footer>
       )}
     </Modal>
+    
+    </>
   );
 }
 
