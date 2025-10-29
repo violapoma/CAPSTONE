@@ -50,14 +50,6 @@ function SearchPanel({ show, handleClose, searchTerm }) {
         <Offcanvas.Title>Results for `{currentSearchTerm}`</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
-        {/* <Form onSubmit={(e) => e.preventDefault()} className="mb-3">
-          <Form.Control
-            type="search"
-            placeholder="Refine search..."
-            value={currentSearchTerm}
-            onChange={handleLocalSearchChange}
-          />
-        </Form> */}
 
         {loading && (
           <div className="text-center">
@@ -79,7 +71,6 @@ function SearchPanel({ show, handleClose, searchTerm }) {
                     to={`/communities/${comm._id}`}
                     key={comm._id}
                   >
-                    {/* <i className="bi bi-layout-wtf me-2" /> */}
                     <img src={comm?.cover} alt="profilePic" style={{width:'2em', height:'2em', borderRadius:'50%', marginRight: '0.5em'}} />
                     {comm.name}
                   </ListGroup.Item>
@@ -95,7 +86,6 @@ function SearchPanel({ show, handleClose, searchTerm }) {
                     to={`${user._id === loggedUser._id ? '/' : `/users/${user._id}`}`}
                     key={user._id}
                   >
-                    {/* <i className="bi bi-person me-2" /> */}
                     <img src={user?.profilePic} alt="profilePic" style={{width:'2em', height:'2em', borderRadius:'50%', marginRight: '0.5em'}} />
                     {user.username}
                   </ListGroup.Item>

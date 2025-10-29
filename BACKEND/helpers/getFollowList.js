@@ -30,7 +30,7 @@ export async function getFollowList(request, response) {
 
     const followList = await FollowConnection.find(query).populate(
       populateField,
-      "username profilePic"
+      "username profilePic usesAvatar avatarRPM"
     );
 
     return response.status(200).json(followList);

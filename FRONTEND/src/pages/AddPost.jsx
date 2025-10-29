@@ -22,7 +22,6 @@ function AddPost() {
   const { commId, postId } = useParams();
   const isEdit = !!postId;
 
-  // const [showPreview, setShowPreview] = useState(false); //preview del contenuto
   const [validated, setValidated] = useState(false); //validazione form
   const [cover, setCover] = useState(); //gestione coverImg
   const [coverPreview, setCoverPreview] = useState();

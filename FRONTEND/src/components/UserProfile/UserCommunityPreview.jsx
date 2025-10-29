@@ -6,7 +6,6 @@ import CommunityDetails from "../Modals/CommunityDetails";
 function UserCommunityPreview({ communities }) {
   const [showCommDetails, setShowCommDetails] = useState(false); //join not active community modal
   const [selectedId, setSelectedId] = useState(null);
-  //TODO: diable communitypage if community is not approved or not active
   const handleOpen = ()=>{
     setShowCommDetails(true);
   }

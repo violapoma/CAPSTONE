@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Badge, Card, CardBody, CardImg, Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-function PostPreview({ post }) {
+function PostPreview({ post, forProfile }) {
   useEffect(() => {
     console.log(post);
   }, []);
@@ -16,15 +16,12 @@ function PostPreview({ post }) {
   }
 
   function getTextPreview(html, maxLength = 200) {
-  // Decodifica se serve
   const decoded = decodeHtmlEntities(html);
 
-  // Crea un elemento temporaneo e ottieni il testo visibile
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = decoded;
   const text = tempDiv.textContent || tempDiv.innerText || "";
 
-  // Rimuove spazi multipli e tronca
   const cleanText = text.replace(/\s+/g, " ").trim();
 
   return cleanText.length > maxLength
@@ -40,7 +37,7 @@ function PostPreview({ post }) {
         <Card.Title className="fw-bold">{post.title}</Card.Title>
         {post.subtitle && <Card.Subtitle>{post.subtitle}</Card.Subtitle>}
         <Card.Subtitle>{post.inCommunity.name}</Card.Subtitle>
-        <Card.Text className="fs-6">{getTextPreview(post.content)}</Card.Text>
+        {/* {forProfile && <Card.Text className="fs-6">{getTextPreview(post.content)}</Card.Text>} */}
       </Card.Body>
     </Card>
   );

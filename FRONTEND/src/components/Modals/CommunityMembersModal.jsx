@@ -1,7 +1,6 @@
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../contexts/authContext";
-import ListSkeletonItem from "../Helpers/ListSkeletonItem";
 import { useEffect, useState } from "react";
 import LazyLoadedAvatar from "../Helpers/LazyLoadedListItem";
 
@@ -36,20 +35,18 @@ function CommunityMembersModal({
       </Modal.Header>
       <Modal.Body className="d-flex flex-column px-5">
         
-        {/* Usiamo un check di base, non serve più lo showSkeleton */}
         {memberList?.length > 0 ? (
           memberList.map((m) => (
             <Link
               to={m._id === loggedUser._id ? "/" : `/users/${m._id}`}
               key={m._id}
-              className="mb-3 hovering d-flex align-items-center" // Aggiungi d-flex per l'allineamento
+              className="mb-3 hovering d-flex align-items-center" 
               onClick={handleClose}
             >
-              {/* 🛑 FIX: Usa il componente che gestisce il caricamento */}
               <LazyLoadedAvatar 
-                src={m.profilePic} 
+                src={m.usesAvatar ? m.avatarRPM : m.profilePic} 
                 username={m.username}
-                className="profilePicList" // Passa la classe CSS per la dimensione
+                className="profilePicList" 
               />
 
               {m.username}

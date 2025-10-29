@@ -30,7 +30,6 @@ function EditComminityModal({
   const [descrLength, setDescrLength] = useState(0);
   const [guidelinesLength, setGuidelinesLength] = useState(0);
 
-  // Gestione campi
   const handleChanges = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -98,7 +97,6 @@ function EditComminityModal({
     }
   };
 
-  // Popola i campi quando community cambia
   useEffect(() => {
     if (community) {
       setFormData({

@@ -12,7 +12,7 @@ function DetailsModal({
   setShowDetails,
 }) {
   const {loggedUser} = useAuthContext();
-
+  
   const handleClose = () => {
     setShowDetails(false);
   };
@@ -48,7 +48,7 @@ function DetailsModal({
                       <ListGroup.Item key={f._id} className="listing" onClick={handleClose}>
                         <Link to={f.follower._id === loggedUser._id ? "/" :`/users/${f.follower?._id}`}>
                           <img
-                            src={f.follower?.profilePic}
+                            src={f.follower?.usesAvatar? f.follower.avatarRPM : f.follower.profilePic}
                             className="profilePicList me-3"
                             alt="profilePic"
                           />
@@ -70,7 +70,7 @@ function DetailsModal({
                     <ListGroup.Item key={f._id} className="listing" onClick={handleClose}>
                       <Link to={f.following._id === loggedUser._id ? "/" :`/users/${f.following?._id}`}>
                         <img
-                          src={f.following?.profilePic}
+                          src={f.following?.usesAvatar ? f.following.avatarRPM : f.following.profilePic}
                           className="profilePicList me-3"
                           alt="profilePic"
                         />

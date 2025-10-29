@@ -84,6 +84,7 @@ function CommunityHeader({
               <p onClick={() => setShowMembers(true)} className="cursorPointer">
                 {community.members?.length || 0} members
               </p>
+              <p className="mx-3">{community.description}</p>
               <div>
                 {community.topic?.map((t, idx) => (
                   <Badge

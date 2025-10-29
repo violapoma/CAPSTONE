@@ -60,48 +60,12 @@ function UserProfile({ isMe }) {
     if (!token) return;
     console.log('useEffect triggered', refreshTrigger, 'isMe', isMe);
     setLoadingUser(true);
-    //setUser(null);
     if (!isMe && userId) {
       fetchUser();
     } else if (isMe) {
       fetchUser();
     }
   }, [token, userId, isMe, loggedUser, refreshTrigger]);
-
-  // useEffect(()=>{
-  //   if(isMe)
-  //     fetchUser();
-  // },[user])
-
-  // // Effect to log other infos once user is available
-  // useEffect(() => {
-  //   if (
-  //     user &&
-  //     !loadingPosts &&
-  //     !loadingCommunities &&
-  //     !loadingFollowers &&
-  //     !loadingFollowing
-  //   ) {
-  //     console.log("--------------------------------------------");
-  //     console.log("User:", user);
-  //     console.log("Posts:", posts);
-  //     console.log("Communities:", communities);
-  //     console.log("Followers:", followers);
-  //     console.log("Following:", following);
-  //     console.log("--------------------------------------------");
-  //   }
-  // }, [
-  //   user,
-  //   posts,
-  //   communities,
-  //   followers,
-  //   following,
-  //   loadingPosts,
-  //   loadingCommunities,
-  //   loadingFollowers,
-  //   loadingFollowing,
-  // ]);
-
 
   return (
     <div>
@@ -132,7 +96,7 @@ function UserProfile({ isMe }) {
             <Col xs={12} md={stillNotActive.length > 0 ? 9 : 12}>
               <h3 className="mb-3">Posts</h3>
 
-              <UserPosts posts={posts} />
+              <UserPosts posts={posts} forProfile={true}/>
             </Col>
             {stillNotActive.length > 0 && (
               <Col xs={12} md={3}>

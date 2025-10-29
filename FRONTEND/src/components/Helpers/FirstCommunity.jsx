@@ -16,7 +16,6 @@ function FirstCommunity(){
 
   const fetchCommunities = async () => {
     setLoading(true);
-    // setConsoleMsg("");
     try {
       const res = await axiosInstance.get("/communities/approved");
       if (!Array.isArray(res.data)) {
@@ -27,7 +26,6 @@ function FirstCommunity(){
       console.log("communities: ", communities);
     } catch (err) {
       console.log(err);
-      // setConsoleMsg(err.message);
     } finally {
       setLoading(false);
     }
@@ -37,9 +35,6 @@ function FirstCommunity(){
     fetchCommunities();
   }, []);
 
-  // useEffect(() => {
-  //   if (consoleMsg) setShowErrorModal(true);
-  // }, [consoleMsg]);
 
   useEffect(() => {
     console.log("chosen community", chosenCommunity);
@@ -84,13 +79,7 @@ function FirstCommunity(){
        
       </Row>
       <Button variant="outline-secondary" as={Col} sm={2} onClick={handleSelection}> Done </Button>
-      {/* {showErrorModal && (
-        <ErrorModal
-          consoleMsg={consoleMsg}
-          show={showErrorModal}
-          setShow={setShowErrorModal}
-        />
-      )} */}
+
     </Container>
   );
 }

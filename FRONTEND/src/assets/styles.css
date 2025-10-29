@@ -312,7 +312,7 @@ svg:hover {
   font-size: 12px;
 }
 .preview-box {
-  height: 275px;
+  /* height: 275px; */
   overflow-y: scroll;
   background-color: white;
 }

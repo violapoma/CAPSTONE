@@ -68,7 +68,7 @@ export async function getAllNotifications(request, response) {
   const userId = request.loggedUser.id; 
   try {
     const user = await User.findById(userId).populate([
-      { path: "notifications.from", select: "username profilePic" },
+      { path: "notifications.from", select: "username profilePic usesAvatar avatarRPM" },
       { path: "notifications.source" } 
     ]);
     if (!user)

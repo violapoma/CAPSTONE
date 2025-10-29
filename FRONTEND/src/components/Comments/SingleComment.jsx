@@ -1,8 +1,7 @@
-import { Alert, Button, Col, Image, Modal, Row } from "react-bootstrap";
+import { Button, Col, Image, Modal, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../contexts/authContext";
 import { useEffect, useRef, useState } from "react";
-import axiosInstance from "../../../data/axios";
 import parse from "html-react-parser"; //per quill
 import ErrorModal from "../Modals/ErrorModal";
 import ReactionRow from "../Helpers/ReactionRow";
@@ -42,7 +41,7 @@ function SingleComment({
   useEffect(() => {
     setIsMine(comment.author._id === loggedUser._id);
   }, [comment]);
-  // const isMine = comment.author._id === loggedUser._id; //va bene anche senza stato credo
+
 
   useEffect(() => {
     if (scrollToThis && commentRef.current) {
@@ -56,33 +55,12 @@ function SingleComment({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // const deleteComment = async () => {
-  //   try {
-  //     const deleting = await axiosInstance.delete(
-  //       `/posts/${postId}/comments/${comment._id}`
-  //     );
-  //     setSuccessDel(true);
-  //     setTimeout(() => {
-  //       handleClose();
-  //       setSuccessDel(false);
-  //     }, 1000);
-  //   } catch (error) {
-  //     console.log("errore cancellazione commento", error);
-  //     setConsoleMsg(
-  //       "An error occurred while deleting your comment, try again later"
-  //     );
-  //     setShowError(true);
-  //   }
-  // };
-
   const editComment = () => {
-    //console.log("setCommentToEdit in singlecomment", comment);
     setCommentToEdit(comment);
     setIsAccordionOpen(true);
   };
 
   const replyToComment = () => {
-    //console.log("setParentComment in singleComment", comment);
     setParentComment(comment);
     setIsAccordionOpen(true);
   };
@@ -197,31 +175,7 @@ function SingleComment({
           </Row>
         )}
       </Row>
-
-      {/* <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton className="border-0" />
-        <Modal.Body className="text-center">
-          {successDel ? (
-            <Alert variant="success">Comment deleted successfully!</Alert>
-          ) : (
-            <>
-              Are you sure you want to delete this comment{" "}
-              <strong>permanently</strong>? This action is irreversible!
-            </>
-          )}
-          {consoleMsg && <Alert variant="danger">{consoleMsg}</Alert>}
-        </Modal.Body>
-        {!successDel && (                                   
-          <Modal.Footer className="border-0">
-            <Button variant="secondary" onClick={handleClose}>
-              Go back
-            </Button>
-            <Button variant="danger" onClick={deleteComment}>
-              Delete this comment <strong>permanently</strong>
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal> */}
+      
       <ConfirmDelete showConfirmDelete={showConfirmDelete} setShowConfirmDelete={setShowShowConfirmDelete} what='comment' />      
 
       <ErrorModal

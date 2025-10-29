@@ -44,7 +44,6 @@ export function LoginModal({ showLogin, setShowLogin }) {
       setShowError(true); 
       console.log("errore di login", err);
     }
-    //setShowLogin(false);
   };
 
   return (

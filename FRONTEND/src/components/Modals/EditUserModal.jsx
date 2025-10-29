@@ -26,7 +26,6 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
   const { loggedUser, setLoggedUser } = useAuthContext();
 
   const [success, setSuccess] = useState(false);
-  //const [isSwitchOn, setIsSwitchOn] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false); 
 
@@ -54,14 +53,6 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
     }
   }, [loggedUser]);
 
-  // useEffect(() => {
-  //   if (loggedUser?.avatarRPM) {
-  //     setPicPreview(loggedUser.avatarRPM);
-  //     setUseAvatar(true);
-  //   }
-  //   //updateAvatar();
-  //   setRefreshTrigger(prev=>prev+1);
-  // }, [loggedUser?.avatarRPM]);
 
   const updateAvatar = async()=>{
     await updateUserAvatar();
@@ -88,12 +79,6 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
     handleChanges(e);
     setBioLength(e.target.value.length);
   };
-
-  // const handleSwitch = (e) => {
-  //   const checked = e.target.checked;
-  //   setIsSwitchOn(checked);
-  //   console.log("switch: ", checked);
-  // };
 
   const handleToggle = (e) => {
     const checked = e.target.checked;
@@ -159,7 +144,7 @@ function EditUserModal({ showEditUserModal, setShowEditUserModal, setRefreshTrig
       </Modal.Header>
       <Modal.Body className="d-flex align-items-center">
         {success ? (
-          <Alert variant="success">Your changes have been applied</Alert>
+          <Alert variant="success" className="w-100 text-center">Your changes have been applied</Alert>
         ) : (
           <>
             <Form

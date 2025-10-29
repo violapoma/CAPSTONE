@@ -71,27 +71,6 @@ function PostDetails() {
     }
   };
 
-  // const deletePost = async () => {
-  //   try {
-  //     const res = axiosInstance.delete(
-  //       `/communities/${commId}/posts/${postId}`
-  //     );
-  //     console.log("deleted successfully");
-  //     setSuccessDel(true);
-
-  //     setTimeout(() => {
-  //       handleClose();
-  //       navigate(`/communities/${commId}`);
-  //     }, 1000);
-  //   } catch (e) {
-  //     setConsoleMsg(
-  //       "An error occurred while deleting your post 😿 try again later"
-  //     );
-  //     setShowError(true);
-  //     console.log("errore nella delete", e);
-  //   }
-  // };
-
   useEffect(() => {
     getPost();
   }, [postId, userId]);
@@ -177,30 +156,6 @@ function PostDetails() {
         setShowConfirmDelete={setShowConfirmDelete}
         what="post"
       />
-
-      {/* <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton className="border-0" />
-        <Modal.Body className="text-center">
-          {successDel ? (
-            <Alert variant="success">Post deleted successfully!</Alert>
-          ) : (
-            <>
-              Are you sure you want to delete <strong>permanently</strong> this
-              post? This action is irreversible!
-            </>
-          )}
-        </Modal.Body>
-        {!successDel && (
-          <Modal.Footer className="border-0">
-            <Button variant="secondary" onClick={handleClose}>
-              Go back
-            </Button>
-            <Button variant="danger" onClick={deletePost}>
-              Delete this post <strong>permanently</strong>
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal> */}
 
       <ErrorModal
         consoleMsg={consoleMsg}

@@ -52,7 +52,6 @@ function AddComment({
     "link",
   ];
 
-  // Aggiorna testo del form o commentToEdit a seconda del caso
   const handleContentChanges = (value) => {
     if (isEdit) {
       setCommentToEdit((prev) => ({
@@ -74,7 +73,6 @@ function AddComment({
     }));
   };
 
-  // Focus automatico e scroll quando l'Accordion si apre
   useEffect(() => {
     if (isAccordionOpen && containerRef.current) {
       const timer = setTimeout(() => {
@@ -121,10 +119,7 @@ function AddComment({
         setCommentToEdit(null); //reset
       } else if (isReplying) {
         const replyPayload = { ...formData, parent: parentComment._id };
-        // console.log(
-        //   "reply url:",
-        //   `/posts/${postId}/comments/${parentComment._id}`
-        // );
+
         const reply = await axiosInstance.post(
           `/posts/${postId}/comments/${parentComment._id}`, replyPayload
         );

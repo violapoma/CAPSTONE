@@ -6,9 +6,9 @@ function ContentPreview({content}) {
   return (
     <>
     <label>Preview</label>
-    <div className="preview-box mt-2 p-3 border rounded">
+    <div className="preview-box mt-2 p-3 border rounded" style={{maxHeight: '433px'}}>
       <div
-        className="preview-content"
+        className="preview-content h-100"
         dangerouslySetInnerHTML={{ __html: cleanHtml }}
       />
     </div>

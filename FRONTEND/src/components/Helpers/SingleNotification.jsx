@@ -2,11 +2,12 @@ import { Row, Col, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../../data/axios";
 import { useState } from "react";
+import LazyLoadedAvatar from "./LazyLoadedListItem";
 
 function SingleNotification({ notification, setNotifications }) {
   if (!notification || !notification.from) return null;
 
-  const fromAdmin = notification.from.username === 'superadmin'; 
+  const fromAdmin = notification.from.username === "superadmin";
 
   const [notif, setNotif] = useState(notification);
 
@@ -16,11 +17,15 @@ function SingleNotification({ notification, setNotifications }) {
   const categoryConfig = {
     like: {
       text: `liked your ${sourceModel?.toLowerCase()}`,
-      link: `/communities/${meta?.communityId}/posts/${sourceModel === 'Post'? source : meta?.postId}`,
+      link: `/communities/${meta?.communityId}/posts/${
+        sourceModel === "Post" ? source : meta?.postId
+      }`,
     },
     dislike: {
       text: `didn't like your ${sourceModel?.toLowerCase()}`,
-      link: `/communities/${meta?.communityId}/posts/${sourceModel === 'Post'? source : meta?.postId}`,
+      link: `/communities/${meta?.communityId}/posts/${
+        sourceModel === "Post" ? source : meta?.postId
+      }`,
     },
     comment: {
       text: "commented on your ",
@@ -49,14 +54,12 @@ function SingleNotification({ notification, setNotifications }) {
     link: "#",
   };
 
- const handleRead = async () => {
+  const handleRead = async () => {
     if (notif.read) return;
     try {
       await axiosInstance.patch(`/notifications/${notification._id}/read`);
-      setNotifications(prev =>
-        prev.map(n =>
-          n._id === notification._id ? { ...n, read: true } : n
-        )
+      setNotifications((prev) =>
+        prev.map((n) => (n._id === notification._id ? { ...n, read: true } : n))
       );
     } catch (err) {
       console.error("Error marking notification as read:", err);
@@ -64,29 +67,37 @@ function SingleNotification({ notification, setNotifications }) {
   };
 
   return (
-    <Row className={`align-items-center py-1 ${notification.read ? "text-secondary" : "fw-bold"}`} onClick={handleRead}>
+    <Row
+      className={`align-items-center py-1 ${
+        notification.read ? "text-secondary" : "fw-bold"
+      }`}
+      onClick={handleRead}
+    >
       {needPic && notification.from ? (
         <Col sm={2}>
-          <Image
-            src={notification.from.profilePic}
-            roundedCircle
-            style={{ width: "2em", height: "2em" }}
+          <LazyLoadedAvatar
+            src={
+              notification.from.usesAvatar
+                ? notification.from.avatarRPM
+                : notification.from.profilePic
+            }
+            username={notification.from.username}
+            className="profilePicList"
           />
         </Col>
       ) : (
         <Col sm={2}>
           <i className="bi bi-exclamation-octagon fs-3" />
         </Col>
-      )
-      }
+      )}
       <Col sm={10} className={`ps-0 `}>
         {!fromAdmin && (
           <Link to={`/users/${notification.from._id}`} className="fw-bold">
             {notification.from.username}
           </Link>
-        ) }{" "}
+        )}{" "}
         {config.text}{" "}
-        {notification.source && notification.category !== 'community' &&(
+        {notification.source && notification.category !== "community" && (
           <Link to={config.link} className="fw-bold">
             {notification.sourceModel.toLowerCase()}
           </Link>

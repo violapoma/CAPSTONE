@@ -57,8 +57,6 @@ function CommunityMember() {
     fetchCommunityAndCheckIfMember();
   }, [commId, userId]);
 
-  
-  //new
   const isMemberContext = {
     community,
     isMember,
@@ -67,17 +65,15 @@ function CommunityMember() {
   };
 
   const handleUpdateCommunity = (updatedCommunity) => {
-    setCommunity(updatedCommunity); // setCommunity appartiene a questo componente
+    setCommunity(updatedCommunity); 
   }; 
 
-  //new
   if (isLoading || !userId) {
     return <MyLoader />;
   }
 
   console.log('iscommunityhome', isCommunityHome);
-  //TODO: CHECK IF THIS WORKS -> NO
-  //return new
+
   return (
     <>
       <CommunityHeader
@@ -90,10 +86,6 @@ function CommunityMember() {
       />
       {isMember || isModerator ? (
         <>
-          {/* <CommunityPostContainer
-            communityId={commId}
-            commStyle={community?.style}
-          /> */}
           <Outlet context={isMemberContext} />
         </>
       ) : (
@@ -105,19 +97,6 @@ function CommunityMember() {
       )}
     </>
   );
-  /*return (
-    <>
-      {isMember || isModerator ? (
-        <Outlet /> //communityPage
-      ) : (
-        <CommunityNewMember
-          community={community}
-          isMember={isMember}
-          isModerator={isModerator}
-        />
-      )}
-    </>
-  );*/
 }
 
 export default CommunityMember;

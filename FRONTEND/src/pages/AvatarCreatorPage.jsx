@@ -81,7 +81,6 @@ const AvatarCreatorPage = () => {
         ✕
       </button>
 
-      {/* Creator con key unica per ogni utente */}
       <AvatarCreator
         key={avatarKey.current }
         subdomain="chitchat-fb4pnw"
